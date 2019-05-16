@@ -17,16 +17,22 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 - Target minimum iOS Version has been changed to 11.0
 - Architecture has been changed to ARM64
 
-### Quality settings (medium quality)
+### Quality settings
+
+#### Medium quality
 
 - Shadow Distance has been changed to 8
 - Shadow Resolution has been changed to High Resolution
 
 ## Packages
 
-- AR Foundation version 1.1.0 has been added
-- ARKit XR Plugin version 1.0.0 has been added
+- AR Foundation version 2.1.0 has been added
+- ARKit XR Plugin version 2.1.0 has been added
 
 ## Build Settings
 
 - The platform has been switched to iOS
+
+## Scenes
+
+- A minimal AR scene has been created.
