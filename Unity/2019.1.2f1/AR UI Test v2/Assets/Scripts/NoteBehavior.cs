@@ -19,7 +19,11 @@ public class NoteBehavior : MonoBehaviour
 
     public void changeNoteText(string newText)
     {
-        TMP_Text noteTextBox = FindObjectOfType<TMP_Text>();
-        noteTextBox.text = newText;
+        TMP_Text[] noteTextBox = GetComponentsInChildren<TMP_Text>();
+        Debug.Log(noteTextBox.Length);
+        for (var i = 0; i < noteTextBox.Length; i++)
+        {
+            noteTextBox[i].text = newText;
+        }
     }
 }

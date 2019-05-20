@@ -14,8 +14,11 @@ public class CreateNotes : MonoBehaviour
     public Button placeButton, deleteButton;
 
     private ARRaycastManager arRaycastManager;
+    private ARPlaneManager arPlaneManager;
     private Pose placementPose;
     private bool placementPoseIsValid;
+
+    private RaycastHit deleteRayHit;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +27,7 @@ public class CreateNotes : MonoBehaviour
         deleteButton.onClick.AddListener(DeleteNote);
 
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
+        arPlaneManager = FindObjectOfType<ARPlaneManager>();
     }
 
     // Update is called once per frame
@@ -31,6 +35,7 @@ public class CreateNotes : MonoBehaviour
     {
         UpdatePlacementPose();
         UpdatePlacementIndicator();
+        UpdateDeleteButton();
     }
 
     private void PlaceNote()
@@ -43,7 +48,7 @@ public class CreateNotes : MonoBehaviour
 
     private void DeleteNote()
     {
-
+        Destroy(deleteRayHit.transform.gameObject);
     }
 
     private void UpdatePlacementPose()
@@ -57,9 +62,13 @@ public class CreateNotes : MonoBehaviour
         {
             placementPose = hits[0].pose;
 
-            var cameraForward = Camera.main.transform.forward;
-            var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
-            placementPose.rotation = Quaternion.LookRotation(cameraBearing);
+            if (placementPose.rotation.eulerAngles.x < 10) // if looking at horizontal plane
+            {
+                var cameraForward = Camera.main.transform.forward;
+                var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+
+                placementPose.rotation = Quaternion.LookRotation(cameraBearing);
+            }          
         }
     }
 
@@ -76,7 +85,19 @@ public class CreateNotes : MonoBehaviour
         {
             placementIndicator.SetActive(false);
 
-            placeButton.interactable = true;
+            placeButton.interactable = false;
+        }
+    }
+
+    private void UpdateDeleteButton()
+    {
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out deleteRayHit, Mathf.Infinity)) // also sets deleteRayHit
+        {
+            deleteButton.interactable = true;
+        }
+        else
+        {
+            deleteButton.interactable = false;
         }
     }
 }
