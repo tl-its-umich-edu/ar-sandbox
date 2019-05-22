@@ -179,6 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e970fdb715c0246369c00eab589b9e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mustachePrefab: {fileID: 6281481729751558604, guid: 3ae23adf26ff047848d3f4b946400785,
+    type: 3}
+  doorNotesPrefab: {fileID: 9146608745798982222, guid: e715a884b36974360aa2c06b3752d8ec,
+    type: 3}
 --- !u!114 &575784131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,8 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ReferenceLibrary: {fileID: 11400000, guid: 94f021c5a08794ac4bfcdda967a95a0e, type: 2}
   m_MaxNumberOfMovingImages: 4
-  m_TrackedImagePrefab: {fileID: 2206783505624988425, guid: c7612a9a7c18e4dc0b2818b9716d4bc6,
-    type: 3}
+  m_TrackedImagePrefab: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,6 +426,7 @@ GameObject:
   - component: {fileID: 1280049315}
   - component: {fileID: 1280049314}
   - component: {fileID: 1280049318}
+  - component: {fileID: 1280049317}
   m_Layer: 0
   m_Name: AR Session
   m_TagString: Untagged
@@ -469,6 +473,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1280049317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280049313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630fcbe79005d425882e9a3dd00350e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TargetFrameRate: 60
 --- !u!114 &1280049318
 MonoBehaviour:
   m_ObjectHideFlags: 0

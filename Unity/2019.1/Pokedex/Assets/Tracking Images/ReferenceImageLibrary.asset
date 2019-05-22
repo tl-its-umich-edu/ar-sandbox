@@ -19,19 +19,19 @@ MonoBehaviour:
       m_GuidLow: 4739839660715103795
       m_GuidHigh: 1372244659436406964
     m_SerializedTextureGuid:
-      m_GuidLow: 3811598246796893808
-      m_GuidHigh: 10961346083339972089
-    m_Size: {x: 0.07273109, y: 0.045}
+      m_GuidLow: 6102842925181774188
+      m_GuidHigh: 3100682026992227881
+    m_Size: {x: 0.08, y: 0.050412696}
     m_SpecifySize: 1
     m_Name: mcard
-    m_Texture: {fileID: 2800000, guid: 26d49e70846934e5f92d99e52f861e98, type: 3}
+    m_Texture: {fileID: 0}
   - m_SerializedGuid:
       m_GuidLow: 5428622156863518748
       m_GuidHigh: 13300592407021950341
     m_SerializedTextureGuid:
-      m_GuidLow: 7238421689528641819
-      m_GuidHigh: 2528912160673485995
-    m_Size: {x: 0.06973982, y: 0.045}
+      m_GuidLow: 337184504599986291
+      m_GuidHigh: 8967388625851161755
+    m_Size: {x: 0.1, y: 0.05}
     m_SpecifySize: 1
-    m_Name: librarycard
-    m_Texture: {fileID: 2800000, guid: 02d6691b0a2d6474abd41b1d36801823, type: 3}
+    m_Name: 210
+    m_Texture: {fileID: 0}
