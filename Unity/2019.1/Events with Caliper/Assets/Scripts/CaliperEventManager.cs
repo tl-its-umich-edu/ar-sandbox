@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using UnityEngine;
+using UnityEngine.UI;
 using ImsGlobal.Caliper;
 using ImsGlobal.Caliper.Entities.Agent;
 using ImsGlobal.Caliper.Entities.Media;
 using ImsGlobal.Caliper.Events;
 using ImsGlobal.Caliper.Events.Media;
 using NodaTime;
-using UnityEngine.UI;
 
 public class CaliperEventManager : MonoBehaviour
 {
@@ -16,13 +17,17 @@ public class CaliperEventManager : MonoBehaviour
     private string deviceID;
 
     public Button actionButton;
+    public Button testPushButton;
+
+    private static readonly HttpClient client = new HttpClient();
 
     // Start is called before the first frame update
     void Start()
     {
         deviceID = SystemInfo.deviceUniqueIdentifier; // unique for every device
 
-        actionButton.onClick.AddListener(TestCaliperButton);
+        actionButton.onClick.AddListener(ActionButtonEvent);
+        testPushButton.onClick.AddListener(TestPushButtonEventAsync);
     }
 
     // Update is called once per frame
@@ -31,12 +36,12 @@ public class CaliperEventManager : MonoBehaviour
 
     }
 
-    void TestCaliperButton()
+    void ActionButtonEvent()
     {
         TestCaliperEventAsync();
     }
 
-    async void TestCaliperEventAsync()
+    async void TestCaliperEventAsync() // should not return void
     {
         var sensor = new CaliperSensor("milk-unity-caliper-test");
         System.Uri endpointURI = new System.Uri("https://lti.tools/caliper/event?key=milk");
@@ -61,5 +66,26 @@ public class CaliperEventManager : MonoBehaviour
 
         bool success = await sensor.SendAsync(mediaEvent);
         Debug.Log("Success: " + success);
+    }
+
+    private async void TestPushButtonEventAsync() // should not return void
+    {
+        await PostPushyamiEndpointAsync();
+    }
+
+    private async System.Threading.Tasks.Task PostPushyamiEndpointAsync()
+    {
+        var values = new Dictionary<string, string>
+        {
+           { "data", "valid" }
+        };
+
+        var content = new FormUrlEncodedContent(values);
+
+        var response = await client.PostAsync("https://3eec5ec8-3d63-4c36-9789-52475ebc46d2.mock.pstmn.io/simpledata", content);
+
+        var responseString = await response.Content.ReadAsStringAsync();
+
+        Debug.Log(responseString);
     }
 }
