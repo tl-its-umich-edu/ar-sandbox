@@ -6,20 +6,29 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+// todo save position of note in relation to orientation of sign
+// fixme rotation of note always matches rotation of sign even when placed differently
+
 public class CreateNotes : MonoBehaviour
 {
     public GameObject placementIndicator;
-    public GameObject objectToPlace;
+    public GameObject notePrefab;
     public TMP_InputField inputField;
     public Slider noteSizeSlider;
     public Button placeButton, deleteButton;
 
     private ARRaycastManager arRaycastManager;
-    private ARPlaneManager arPlaneManager;
     private Pose placementPose;
     private bool placementPoseIsValid;
-    
+
     private RaycastHit deleteRayHit;
+
+    public Button saveButton, loadButton;
+    public TMP_InputField saveInputField;
+    private NoteData noteToSave = null;
+    private GameObject anchorObject = null;
+
+    private InfoTextBehavior infoTextBehavior;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +37,13 @@ public class CreateNotes : MonoBehaviour
         deleteButton.onClick.AddListener(DeleteNote);
 
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
-        arPlaneManager = FindObjectOfType<ARPlaneManager>();
+
+        //saveButton.onClick.AddListener(() => { saveScript.Save(saveInputField.text, noteToSave); });
+        saveButton.onClick.AddListener(SaveNote);
+        loadButton.onClick.AddListener(LoadNote);
+        saveInputField.text = "save.dat";
+
+        infoTextBehavior = GameObject.Find("Info Text (TMP)").GetComponent<InfoTextBehavior>();
     }
 
     // Update is called once per frame
@@ -39,19 +54,34 @@ public class CreateNotes : MonoBehaviour
 
         UpdatePlaceButton();
         UpdateDeleteButton();
+        UpdateSaveButton();
 
         pinchToZoomNote();
     }
 
     private void PlaceNote()
     {
-        GameObject newNote = Instantiate(objectToPlace, placementPose.position, placementPose.rotation) as GameObject;
+        GameObject newNote = Instantiate(notePrefab, placementPose.position, placementPose.rotation) as GameObject;
         newNote.transform.localScale *= noteSizeSlider.value;
 
         // set text of created note
         NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
         newNoteScript.changeNoteText(inputField.text);
         inputField.text = "";
+
+        GameObject nameplateObj = GameObject.Find("nameplate");
+        if (nameplateObj != null)
+        {
+            noteToSave = new NoteData(
+                newNote.GetComponentInChildren<TMP_Text>().text,
+                newNote.transform.position - anchorObject.transform.position,
+                newNote.transform.rotation * Quaternion.Inverse(anchorObject.transform.rotation) // order of multiplying quaternions matter!
+                );
+        }
+        else
+        {
+            infoTextBehavior.SetMessage(2f, Color.red, "nameplate not detected, note will be saved incorrectly!");
+        }
     }
 
     private void DeleteNote()
@@ -121,7 +151,6 @@ public class CreateNotes : MonoBehaviour
 
     private void pinchToZoomNote()
     {
-
         if (Input.touchCount >= 2)
         {
             // find out which two fingers are pinching the same object
@@ -161,6 +190,53 @@ public class CreateNotes : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private void SaveNote()
+    {
+        var saveScript = GetComponent<PersistentData>();
+        saveScript.Save(saveInputField.text, noteToSave);
+        infoTextBehavior.SetMessage(2f, Color.green, "Note saved!");
+    }
+
+    private void LoadNote()
+    {
+        var saveScript = GetComponent<PersistentData>();
+        NoteData noteData = saveScript.Load(saveInputField.text);
+
+        if (noteData != null)
+        {
+            GameObject newNote = Instantiate(
+                notePrefab,
+                noteData.position + anchorObject.transform.position,
+                anchorObject.transform.rotation * noteData.rotation // order of multiplying quaternions matter!
+                ) as GameObject;
+            newNote.transform.localScale *= noteSizeSlider.value;
+
+            NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
+            newNoteScript.changeNoteText(noteData.text);
+        }
+        else
+        {
+            infoTextBehavior.SetMessage(2f, Color.red, "No data to load.");
+        }
+    }
+
+    public void SetAnchorObject(GameObject newAnchorObject)
+    {
+        anchorObject = newAnchorObject;
+    }
+
+    private void UpdateSaveButton()
+    {
+        if (anchorObject != null && noteToSave != null)
+        {
+            saveButton.interactable = true;
+        }
+        else
+        {
+            saveButton.interactable = false;
         }
     }
 }

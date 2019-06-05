@@ -15,13 +15,11 @@ public class PanelToggle : MonoBehaviour
     private RectTransform mainPanelRT;
     private Vector2 mainPanelOrigin;
 
-
     // Start is called before the first frame update
     void Start()
     {
         toggleButton.onClick.AddListener(ToggleMainPanel);
         mainPanelRT = mainPanel.GetComponent<RectTransform>();
-        mainPanelOrigin = new Vector2(mainPanelRT.localPosition.x, mainPanelRT.localPosition.y);
     }
 
     // Update is called once per frame
@@ -29,12 +27,24 @@ public class PanelToggle : MonoBehaviour
     {
         if (hidePanel)
         {
-            mainPanelRT.localPosition = new Vector3(Mathf.Lerp(mainPanelRT.localPosition.x, mainPanelOrigin.x + mainPanelRT.rect.width, transitionSpeed), 0, 0);
+            Vector2 newPanelPos;
+
+            newPanelPos.x = Mathf.Lerp(mainPanelRT.position.x, Screen.width + mainPanelRT.rect.width / 2, transitionSpeed);
+            newPanelPos.y = Screen.height / 2;
+
+            mainPanelRT.position = newPanelPos;
+
             toggleButton.GetComponentInChildren<TMP_Text>().text = "Show";
         }
         else
         {
-            mainPanelRT.localPosition = new Vector3(Mathf.Lerp(mainPanelRT.localPosition.x, mainPanelOrigin.x, transitionSpeed), 0, 0);
+            Vector2 newPanelPos;
+
+            newPanelPos.x = Mathf.Lerp(mainPanelRT.position.x, Screen.width - mainPanelRT.rect.width / 2, transitionSpeed);
+            newPanelPos.y = Screen.height / 2;
+
+            mainPanelRT.position = newPanelPos;
+
             toggleButton.GetComponentInChildren<TMP_Text>().text = "Hide";
         }
     }
