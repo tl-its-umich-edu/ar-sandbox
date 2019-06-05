@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 
+// todo: set tracking to one image only and set as anchor image
+
 public class ImageDetection : MonoBehaviour
 {
     public GameObject nameplatePrefab;

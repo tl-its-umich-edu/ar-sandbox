@@ -19,10 +19,17 @@ public class PersistentData : MonoBehaviour
 
     }
 
-    public void Save(string saveFileName, NoteData noteToSave)
+    public void Save(string saveFileName, List<NoteData> notesToSave)
     {
-        SerializableNoteData serNoteToSave = new SerializableNoteData(noteToSave.text, noteToSave.position, noteToSave.rotation);
+        // convert data to be serializable
+        List<SerializableNoteData> serNotesToSave = new List<SerializableNoteData>();
 
+        foreach (NoteData noteData in notesToSave)
+        {
+            serNotesToSave.Add(new SerializableNoteData(noteData.text, noteData.position, noteData.rotation, noteData.scale));
+        }
+
+        // save data
         string destination = Application.persistentDataPath + "/" + saveFileName;
         FileStream file;
 
@@ -36,12 +43,13 @@ public class PersistentData : MonoBehaviour
         }
 
         BinaryFormatter bf = new BinaryFormatter();
-        bf.Serialize(file, serNoteToSave);
+        bf.Serialize(file, serNotesToSave);
         file.Close();
     }
 
-    public NoteData Load(string saveFileName)
+    public List<NoteData> Load(string saveFileName)
     {
+        // get data
         string destination = Application.persistentDataPath + "/" + saveFileName;
         FileStream file;
 
@@ -56,16 +64,21 @@ public class PersistentData : MonoBehaviour
         }
 
         BinaryFormatter bf = new BinaryFormatter();
-        SerializableNoteData serData = (SerializableNoteData)bf.Deserialize(file);
+        List<SerializableNoteData> serData = (List<SerializableNoteData>)bf.Deserialize(file);
         file.Close();
 
-        NoteData data = new NoteData(serData.text, serData.position, serData.rotation);
+        // convert data back to unserializable types -- maybe this is unnecessary?
 
-        return data;
+        List<NoteData> notes = new List<NoteData>();
+
+        foreach (SerializableNoteData serNoteData in serData)
+        {
+            notes.Add(new NoteData(serNoteData.text, serNoteData.position, serNoteData.rotation, serNoteData.scale));
+        }
+
+        return notes;
     }
 }
-
-// todo: store multiple notes
 
 [System.Serializable]
 public class NoteData
@@ -73,12 +86,14 @@ public class NoteData
     public string text;
     public Vector3 position;
     public Quaternion rotation;
+    public float scale;
 
-    public NoteData(string newText, Vector3 newPosition, Quaternion newRotation)
+    public NoteData(string newText, Vector3 newPosition, Quaternion newRotation, float newScale)
     {
         text = newText;
         position = newPosition;
         rotation = newRotation;
+        scale = newScale;
     }
 }
 
@@ -88,12 +103,14 @@ public class SerializableNoteData
     public string text;
     public SerializableVector3 position;
     public SerializableQuaternion rotation;
+    public float scale;
 
-    public SerializableNoteData(string newText, SerializableVector3 newPosition, SerializableQuaternion newRotation)
+    public SerializableNoteData(string newText, SerializableVector3 newPosition, SerializableQuaternion newRotation, float newScale)
     {
         text = newText;
         position = newPosition;
         rotation = newRotation;
+        scale = newScale;
     }
 }
 

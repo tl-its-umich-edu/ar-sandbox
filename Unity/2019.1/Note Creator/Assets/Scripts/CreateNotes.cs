@@ -6,8 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// todo save position of note in relation to orientation of sign
-// fixme rotation of note always matches rotation of sign even when placed differently
+// todo rotate position of note from anchor based on anchor rotation
 
 public class CreateNotes : MonoBehaviour
 {
@@ -25,22 +24,26 @@ public class CreateNotes : MonoBehaviour
 
     public Button saveButton, loadButton;
     public TMP_InputField saveInputField;
-    private NoteData noteToSave = null;
     private GameObject anchorObject = null;
+    private List<NoteData> listOfNotes = new List<NoteData>();
 
     private InfoTextBehavior infoTextBehavior;
 
     // Start is called before the first frame update
     void Start()
     {
-        placeButton.onClick.AddListener(PlaceNote);
+        placeButton.onClick.AddListener(() => {
+            PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
+            inputField.text = "";
+            }
+        );
         deleteButton.onClick.AddListener(DeleteNote);
 
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
 
         //saveButton.onClick.AddListener(() => { saveScript.Save(saveInputField.text, noteToSave); });
-        saveButton.onClick.AddListener(SaveNote);
-        loadButton.onClick.AddListener(LoadNote);
+        saveButton.onClick.AddListener(SaveNotes);
+        loadButton.onClick.AddListener(LoadNotes);
         saveInputField.text = "save.dat";
 
         infoTextBehavior = GameObject.Find("Info Text (TMP)").GetComponent<InfoTextBehavior>();
@@ -59,34 +62,22 @@ public class CreateNotes : MonoBehaviour
         pinchToZoomNote();
     }
 
-    private void PlaceNote()
+    private void PlaceNote(string text, Vector3 position, Quaternion rotation, float scale)
     {
-        GameObject newNote = Instantiate(notePrefab, placementPose.position, placementPose.rotation) as GameObject;
-        newNote.transform.localScale *= noteSizeSlider.value;
+        GameObject newNote = Instantiate(notePrefab, position, rotation) as GameObject;
+        newNote.transform.localScale *= scale;
 
         // set text of created note
         NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
-        newNoteScript.changeNoteText(inputField.text);
-        inputField.text = "";
+        newNoteScript.changeNoteText(text);
 
-        GameObject nameplateObj = GameObject.Find("nameplate");
-        if (nameplateObj != null)
-        {
-            noteToSave = new NoteData(
-                newNote.GetComponentInChildren<TMP_Text>().text,
-                newNote.transform.position - anchorObject.transform.position,
-                newNote.transform.rotation * Quaternion.Inverse(anchorObject.transform.rotation) // order of multiplying quaternions matter!
-                );
-        }
-        else
-        {
-            infoTextBehavior.SetMessage(2f, Color.red, "nameplate not detected, note will be saved incorrectly!");
-        }
+        listOfNotes.Add(new NoteData(text, position, rotation, scale));
     }
 
     private void DeleteNote()
     {
         Destroy(deleteRayHit.transform.gameObject);
+        // todo: remove deleted notes from listOfNotes
     }
 
     private void UpdatePlacementPose()
@@ -193,29 +184,24 @@ public class CreateNotes : MonoBehaviour
         }
     }
 
-    private void SaveNote()
+    private void SaveNotes()
     {
         var saveScript = GetComponent<PersistentData>();
-        saveScript.Save(saveInputField.text, noteToSave);
+        saveScript.Save(saveInputField.text, listOfNotes);
         infoTextBehavior.SetMessage(2f, Color.green, "Note saved!");
     }
 
-    private void LoadNote()
+    private void LoadNotes()
     {
         var saveScript = GetComponent<PersistentData>();
-        NoteData noteData = saveScript.Load(saveInputField.text);
+        List<NoteData> loadedNotes = saveScript.Load(saveInputField.text);
 
-        if (noteData != null)
+        if (loadedNotes != null)
         {
-            GameObject newNote = Instantiate(
-                notePrefab,
-                noteData.position + anchorObject.transform.position,
-                anchorObject.transform.rotation * noteData.rotation // order of multiplying quaternions matter!
-                ) as GameObject;
-            newNote.transform.localScale *= noteSizeSlider.value;
-
-            NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
-            newNoteScript.changeNoteText(noteData.text);
+            foreach (NoteData loadedNoteData in loadedNotes)
+            {
+                PlaceNote(loadedNoteData.text, loadedNoteData.position, loadedNoteData.rotation, loadedNoteData.scale);
+            }
         }
         else
         {
@@ -230,7 +216,7 @@ public class CreateNotes : MonoBehaviour
 
     private void UpdateSaveButton()
     {
-        if (anchorObject != null && noteToSave != null)
+        if (anchorObject != null && listOfNotes.Count > 0)
         {
             saveButton.interactable = true;
         }
