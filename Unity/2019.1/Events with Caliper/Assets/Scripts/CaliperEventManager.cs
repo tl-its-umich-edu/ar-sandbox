@@ -43,6 +43,10 @@ public class CaliperEventManager : MonoBehaviour
 
     async void TestCaliperEventAsync() // should not return void
     {
+        // this is the example code from the caliper-net readme file with some small changes.
+        // this code will run from the editor and successfully send a caliper event to the
+        // endpoint specified but does not work correctly when built to an iOS device.
+        
         var sensor = new CaliperSensor("milk-unity-caliper-test");
         System.Uri endpointURI = new System.Uri("https://lti.tools/caliper/event?key=milk");
         string endpointId = sensor.RegisterEndpoint(new CaliperEndpointOptions(endpointURI));
@@ -75,6 +79,10 @@ public class CaliperEventManager : MonoBehaviour
 
     private async System.Threading.Tasks.Task PostPushyamiEndpointAsync()
     {
+        // This will send a POST request to the endpoint specified
+        // This was written as a test to make sure that Unity and iOS
+        // could handle sending data to a server.
+
         var values = new Dictionary<string, string>
         {
            { "data", "valid" }

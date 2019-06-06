@@ -1,4 +1,14 @@
-﻿I am following the instructions from the [caliper-net example](https://github.com/IMSGlobal/caliper-net#getting-started).
+﻿# Contents
+
+[Project Description](#project-description)
+
+[List of Files Edited](#list-of-files-edited)
+
+---
+
+# Project Description
+
+I am following the instructions from the [caliper-net example](https://github.com/IMSGlobal/caliper-net#getting-started).
 
 The code examples aren't perfect. I had to change bits of it like removing the `Current Time` attribute and adding an id string to the created media event.
 
@@ -6,22 +16,136 @@ I also added small parts to modify the data like getting a device id and creatin
 
 When running from the Unity editor, the event is sent successfully.
 
-But when running from the iPad, it gives this error after the async POST request fails:
+However, running a build of the project from an iOS device creates an error with the caliper library:
 
 ```
-2019-05-29 09:22:10.974760-0400 EventsWithCaliper[2157:1463828] Task <6AEEA39A-5D24-4C8E-AA60-C684686996EA>.<1> HTTP load failed (error code: -998 [2:0])
-2019-05-29 09:22:10.974815-0400 EventsWithCaliper[2157:1463828] Task <6AEEA39A-5D24-4C8E-AA60-C684686996EA>.<1> finished with error - code: -998
-2019-05-29 09:22:10.975854-0400 EventsWithCaliper[2157:1463611] Task <6AEEA39A-5D24-4C8E-AA60-C684686996EA>.<1> load failed with error Error Domain=NSURLErrorDomain Code=-1 "unknown error" UserInfo={_kCFStreamErrorCodeKey=0, NSUnderlyingError=0x28049d950 {Error Domain=kCFErrorDomainCFNetwork Code=-998 "(null)" UserInfo={NSErrorPeerAddressKey=<CFData 0x2829d81e0 [0x1dad3b870]>{length = 16, capacity = 16, bytes = 0x100201bb23f134e50000000000000000}, _kCFStreamErrorCodeKey=0, _kCFStreamErrorDomainKey=2}}, _NSURLErrorFailingURLSessionTaskErrorKey=LocalUploadTask <6AEEA39A-5D24-4C8E-AA60-C684686996EA>.<1>, _NSURLErrorRelatedURLSessionTaskErrorKey=(
-    "LocalUploadTask <6AEEA39A-5D24-4C8E-AA60-C684686996EA>.<1>"
-), NSLocalizedDescription=unknown error, NSErrorFailingURLStringKey=https://cdp.cloud.unity3d.com/v1/events, NSErrorFailingURLKey=https://cdp.cloud.unity3d.com/v1/events, _kCFStreamErrorDomainKey=2} [-1]
-2019-05-29 09:22:10.976350-0400 EventsWithCaliper[2157:1463611] [BoringSSL] nw_protocol_boringssl_get_output_frames(1301) [C2.1:2][0x10db0d3b0] get output frames failed, state 8196
-2019-05-29 09:22:10.976383-0400 EventsWithCaliper[2157:1463611] [BoringSSL] nw_protocol_boringssl_get_output_frames(1301) [C2.1:2][0x10db0d3b0] get output frames failed, state 8196
-2019-05-29 09:22:10.976469-0400 EventsWithCaliper[2157:1463611] TIC Read Status [2:0x0]: 1:57
-2019-05-29 09:22:10.976478-0400 EventsWithCaliper[2157:1463611] TIC Read Status [2:0x0]: 1:57
+NotSupportedException: System.Reflection.Emit.DynamicMethod::.ctor
+  at Newtonsoft.Json.Utilities.DynamicReflectionDelegateFactory.CreateDynamicMethod (System.String name, System.Type returnType, System.Type[] parameterTypes, System.Type owner) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Utilities.DynamicReflectionDelegateFactory.CreateDefaultConstructor[T] (System.Type type) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Serialization.DefaultContractResolver.InitializeContract (Newtonsoft.Json.Serialization.JsonContract contract) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Serialization.DefaultContractResolver.CreateObjectContract (System.Type objectType) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Serialization.DefaultContractResolver.CreateContract (System.Type objectType) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Serialization.DefaultContractResolver.ResolveContract (System.Type type) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.Serialize (Newtonsoft.Json.JsonWriter jsonWriter, System.Object value, System.Type objectType) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.JsonSerializer.SerializeInternal (Newtonsoft.Json.JsonWriter jsonWriter, System.Object value, System.Type objectType) [0x00000] in <00000000000000000000000000000000>:0 
+  at Newtonsoft.Json.JsonConvert.SerializeObjectInternal (System.Object value, System.Type type, Newtonsoft.Json.JsonSerializer jsonSerializer) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Array.Sort[T] (T[] array, System.Int32 index, System.Int32 length, System.Collections.Generic.IComparer`1[T] comparer) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.SendData[T] (System.Collections.Generic.IEnumerable`1[T] data) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Events.Media.MediaEvent..ctor (System.String id, ImsGlobal.Caliper.Events.Action action) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Func`2[T,TResult].Invoke (T arg) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Linq.Enumerable+WhereSelectEnumerableIterator`2[TSource,TResult].MoveNext () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Threading.Tasks.Task.WhenAll[TResult] (System.Collections.Generic.IEnumerable`1[T] tasks) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (ImsGlobal.Caliper.Events.Event event) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager..cctor () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager.TestCaliperEventAsync () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityAction.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (T1 handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchPress (UnityEngine.EventSystems.PointerEventData pointerEvent, System.Boolean pressed, System.Boolean released) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchEvents () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.Process () [0x00000] in <00000000000000000000000000000000>:0 
+--- End of stack trace from previous location where exception was thrown ---
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.StrongBox`1[T].System.Runtime.CompilerServices.IStrongBox.set_Value (System.Object value) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Events.Media.MediaEvent..ctor (System.String id, ImsGlobal.Caliper.Events.Action action) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Func`2[T,TResult].Invoke (T arg) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Linq.Enumerable+WhereSelectEnumerableIterator`2[TSource,TResult].MoveNext () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Threading.Tasks.Task.WhenAll[TResult] (System.Collections.Generic.IEnumerable`1[T] tasks) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (ImsGlobal.Caliper.Events.Event event) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager..cctor () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager.TestCaliperEventAsync () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityAction.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (T1 handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchPress (UnityEngine.EventSystems.PointerEventData pointerEvent, System.Boolean pressed, System.Boolean released) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchEvents () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.Process () [0x00000] in <00000000000000000000000000000000>:0 
+--- End of stack trace from previous location where exception was thrown ---
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.StrongBox`1[T].System.Runtime.CompilerServices.IStrongBox.set_Value (System.Object value) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (ImsGlobal.Caliper.Events.Event event) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager..cctor () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager.TestCaliperEventAsync () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityAction.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (T1 handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchPress (UnityEngine.EventSystems.PointerEventData pointerEvent, System.Boolean pressed, System.Boolean released) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchEvents () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.Process () [0x00000] in <00000000000000000000000000000000>:0 
+--- End of stack trace from previous location where exception was thrown ---
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.StrongBox`1[T].System.Runtime.CompilerServices.IStrongBox.set_Value (System.Object value) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.Protocol.CaliperClient.Send (System.Collections.Generic.IEnumerable`1[T] events) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at ImsGlobal.Caliper.CaliperSensor.SendAsync (ImsGlobal.Caliper.Events.Event event) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager..cctor () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager.TestCaliperEventAsync () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityAction.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (T1 handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchPress (UnityEngine.EventSystems.PointerEventData pointerEvent, System.Boolean pressed, System.Boolean released) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchEvents () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.Process () [0x00000] in <00000000000000000000000000000000>:0 
+--- End of stack trace from previous location where exception was thrown ---
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.CompilerServices.StrongBox`1[T].System.Runtime.CompilerServices.IStrongBox.set_Value (System.Object value) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager..cctor () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Net.Http.Headers.HttpHeaders.SetValue[T] (System.String name, T value, System.Func`2[T,TResult] toStringConverter) [0x00000] in <00000000000000000000000000000000>:0 
+  at CaliperEventManager.TestCaliperEventAsync () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityAction.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (T1 handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchPress (UnityEngine.EventSystems.PointerEventData pointerEvent, System.Boolean pressed, System.Boolean released) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.ProcessTouchEvents () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.EventSystems.StandaloneInputModule.Process () [0x00000] in <00000000000000000000000000000000>:0 
+--- End of stack trace from previous location where exception was thrown ---
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x00000] in <00000000000000000000000000000000>:0 
+  at System.Threading.SendOrPostCallback.Invoke (System.Object state) [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.UnitySynchronizationContext.Exec () [0x00000] in <00000000000000000000000000000000>:0 
+  at UnityEngine.UnitySynchronizationContext.Exec () [0x00000] in <00000000000000000000000000000000>:0 
+UnityEngine.UnitySynchronizationContext:Exec()
+UnityEngine.UnitySynchronizationContext:Exec()
+ 
+(Filename: currently not available on il2cpp Line: -1)
 ```
 
-I googled the -998 error and found a couple of threads discussing the issue. [1](https://forum.unity.com/threads/no-error-reported-on-ios.670207/) [2](https://www.reddit.com/r/Unity2D/comments/bkvtbz/post_request_with_binary_field_fails_on_ios/) The latter leads me to believe that the caliper library is using a method for creating async POST requests that is incompatible with iOS for some reason.
+# List of Files Edited
 
-I decided to look into alternate ways to use async and tried the code from [this article](https://aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong#The-Fix-is-In). It worked. So a possible solution is to fix or rewrite the library to use the Client object.
+I created the Assets/Scripts/CaliperEventManager.cs script and the Assets/Scenes/Main.unity scene.
 
-There is also an error that appears before the error above, but it only started happening recently when I started trying different solutions so I am not as worried about it.
+The dll files in the plugins folder was compiled on Windows from the caliper-net library. All other files were either generated by Unity.
+
