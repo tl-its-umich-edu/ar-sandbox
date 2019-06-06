@@ -6,7 +6,9 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// todo rotate position of note from anchor based on anchor rotation
+// todo add good comments
+// todo delete notes from list of notes
+// todo rotate position of note from anchor based on anchor rotation?
 
 public class CreateNotes : MonoBehaviour
 {
@@ -77,7 +79,6 @@ public class CreateNotes : MonoBehaviour
     private void DeleteNote()
     {
         Destroy(deleteRayHit.transform.gameObject);
-        // todo: remove deleted notes from listOfNotes
     }
 
     private void UpdatePlacementPose()

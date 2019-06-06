@@ -6,6 +6,7 @@ using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 
 // todo: set tracking to one image only and set as anchor image
+// todo: make anchors selectable?
 
 public class ImageDetection : MonoBehaviour
 {
