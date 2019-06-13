@@ -23,10 +23,9 @@ public class CreateGroup : MonoBehaviour
 
     private RawImage waveIndicator;
     private RectTransform waveIndicatorRT;
-    private Vector2 waveIndicatorOrigin;
     private Color defaultPanelColor;
 
-    private bool runUpdateRoutines = true;
+    public bool runUpdateRoutines = true;
 
     // Start is called before the first frame update
     void Start()
@@ -41,7 +40,6 @@ public class CreateGroup : MonoBehaviour
         defaultPanelColor = startPanel.GetComponent<Image>().color;
 
         waveIndicatorRT = waveIndicatorPanel.GetComponent<RectTransform>();
-        waveIndicatorOrigin = new Vector2(waveIndicatorRT.localPosition.x, waveIndicatorRT.localPosition.y);
 
         waveIndicator = startPanel.GetComponentInChildren<RawImage>();
     }
@@ -79,7 +77,7 @@ public class CreateGroup : MonoBehaviour
                 waveIndicatorRT.localPosition.z
                 );
 
-            placeButton.interactable = true; //
+            placeButton.interactable = false; // false when not debugging
         }
     }
 
