@@ -8,7 +8,7 @@ using UnityEngine.XR.ARSubsystems;
 
 // todo add good comments
 // todo delete notes from list of notes
-// todo rotate position of note from anchor based on anchor rotation?
+// fixme keep note in same rotation and position relative to anchor
 
 public class CreateNotes : MonoBehaviour
 {
@@ -27,7 +27,7 @@ public class CreateNotes : MonoBehaviour
     public Button saveButton, loadButton;
     public TMP_InputField saveInputField;
     private GameObject anchorObject = null;
-    private List<NoteData> listOfNotes = new List<NoteData>();
+    private List<NoteData> noteSaveDataList = new List<NoteData>();
 
     private InfoTextBehavior infoTextBehavior;
 
@@ -60,6 +60,7 @@ public class CreateNotes : MonoBehaviour
         UpdatePlaceButton();
         UpdateDeleteButton();
         UpdateSaveButton();
+        UpdateLoadButton();
 
         pinchToZoomNote();
     }
@@ -73,7 +74,8 @@ public class CreateNotes : MonoBehaviour
         NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
         newNoteScript.changeNoteText(text);
 
-        listOfNotes.Add(new NoteData(text, position, rotation, scale));
+        // add note to list to be saved
+        noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
     }
 
     private void DeleteNote()
@@ -188,7 +190,7 @@ public class CreateNotes : MonoBehaviour
     private void SaveNotes()
     {
         var saveScript = GetComponent<PersistentData>();
-        saveScript.Save(saveInputField.text, listOfNotes);
+        saveScript.Save(saveInputField.text, noteSaveDataList);
         infoTextBehavior.SetMessage(2f, Color.green, "Note saved!");
     }
 
@@ -201,7 +203,7 @@ public class CreateNotes : MonoBehaviour
         {
             foreach (NoteData loadedNoteData in loadedNotes)
             {
-                PlaceNote(loadedNoteData.text, loadedNoteData.position, loadedNoteData.rotation, loadedNoteData.scale);
+                PlaceNote(loadedNoteData.text, loadedNoteData.position + anchorObject.transform.position, loadedNoteData.rotation, loadedNoteData.scale);
             }
         }
         else
@@ -217,13 +219,25 @@ public class CreateNotes : MonoBehaviour
 
     private void UpdateSaveButton()
     {
-        if (anchorObject != null && listOfNotes.Count > 0)
+        if (anchorObject != null && noteSaveDataList.Count > 0)
         {
             saveButton.interactable = true;
         }
         else
         {
             saveButton.interactable = false;
+        }
+    }
+
+    private void UpdateLoadButton()
+    {
+        if (anchorObject != null)
+        {
+            loadButton.interactable = true;
+        }
+        else
+        {
+            loadButton.interactable = false;
         }
     }
 }

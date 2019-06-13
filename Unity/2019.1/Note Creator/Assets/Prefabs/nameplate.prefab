@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6626492593555939325}
   - component: {fileID: 1005408753853756353}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: nameplate texture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 5856044013018576715}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.79, y: 0.6790431, z: 1}
+  m_LocalScale: {x: 2.69, y: 0.6743053, z: 1}
   m_Children: []
   m_Father: {fileID: 3217638486521079240}
   m_RootOrder: 0
@@ -57,7 +57,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 420cf63f19ee14d239d8285cb76cb30d, type: 2}
+  - {fileID: 2100000, guid: c867819ee39a7488d85b8bbedb8068b0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 2555551714313334686}
   - component: {fileID: 163293844892945546}
   m_Layer: 0
-  m_Name: Quad (1)
+  m_Name: halo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -135,7 +135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6228638182607547012}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.001, z: 0}
   m_LocalScale: {x: 2.99, y: 0.8790431, z: 1}
   m_Children: []
   m_Father: {fileID: 3217638486521079240}

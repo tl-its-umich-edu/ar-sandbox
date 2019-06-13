@@ -50,7 +50,7 @@ public class ImageDetection : MonoBehaviour
 
             switch (trackedImage.referenceImage.name)
             {
-                case "nameplate":
+                case "nameplate amanda":
                     GameObject nameplateObj = Instantiate(nameplatePrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
                     nameplateObj.transform.parent = trackedImage.transform;
                     nameplateObj.name = "nameplate";

@@ -26,12 +26,12 @@ MonoBehaviour:
     m_Name: hiro
     m_Texture: {fileID: 0}
   - m_SerializedGuid:
-      m_GuidLow: 4937049242665606346
-      m_GuidHigh: 11104964034512899457
+      m_GuidLow: 4666477699871540929
+      m_GuidHigh: 7620922166899875981
     m_SerializedTextureGuid:
-      m_GuidLow: 10674757186477843765
-      m_GuidHigh: 17077684073731122538
-    m_Size: {x: 0.279, y: 0.06790431}
+      m_GuidLow: 9544466512000248426
+      m_GuidHigh: 3030914384561202968
+    m_Size: {x: 0.269, y: 0.06743053}
     m_SpecifySize: 1
-    m_Name: nameplate
+    m_Name: nameplate amanda
     m_Texture: {fileID: 0}
