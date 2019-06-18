@@ -9,6 +9,8 @@ using ImsGlobal.Caliper.Entities.Media;
 using ImsGlobal.Caliper.Events;
 using ImsGlobal.Caliper.Events.Media;
 using NodaTime;
+using System;
+using System.Text;
 
 public class CaliperEventManager : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class CaliperEventManager : MonoBehaviour
 
     public Button actionButton;
     public Button testPushButton;
+    public Button customCaliperButton;
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -28,6 +31,7 @@ public class CaliperEventManager : MonoBehaviour
 
         actionButton.onClick.AddListener(ActionButtonEvent);
         testPushButton.onClick.AddListener(TestPushButtonEventAsync);
+        customCaliperButton.onClick.AddListener(CustomCaliperButtonEventAsync);
     }
 
     // Update is called once per frame
@@ -56,7 +60,7 @@ public class CaliperEventManager : MonoBehaviour
         Debug.Log(">>>>> Attempt async at: " + now);
 
         // dummy event taken from example
-        var mediaEvent = new MediaEvent("event id", Action.Paused)
+        var mediaEvent = new MediaEvent("event id", ImsGlobal.Caliper.Events.Action.Paused)
         {
             Actor = new Person(deviceID),
             Object = new VideoObject("https://example.com/super-media-tool/video/1225"),
@@ -69,7 +73,7 @@ public class CaliperEventManager : MonoBehaviour
         };
 
         bool success = await sensor.SendAsync(mediaEvent);
-        Debug.Log("Success: " + success);
+        Debug.Log(">>>>> Success: " + success);
     }
 
     private async void TestPushButtonEventAsync() // should not return void
@@ -96,4 +100,100 @@ public class CaliperEventManager : MonoBehaviour
 
         Debug.Log(responseString);
     }
+
+    private async void CustomCaliperButtonEventAsync()
+    {
+        await PushMediaEventAsync("http://lti.tools/caliper/event?key=milk");
+        //await PushMediaEventAsync("https://postman-echo.com/post");
+    }
+
+    private async System.Threading.Tasks.Task PushMediaEventAsync(string pushURL)
+    {
+        // fill in data fields
+
+        CaliperMediaEvent caliperMediaEvent = new CaliperMediaEvent();
+        caliperMediaEvent.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
+        caliperMediaEvent.id = "event id";
+        caliperMediaEvent.type = "MediaEvent";
+
+        CaliperEventDetailsIdType actor = new CaliperEventDetailsIdType();
+        caliperMediaEvent.actor = actor;
+        actor.id = SystemInfo.deviceUniqueIdentifier;
+        actor.type = "Person";
+
+        caliperMediaEvent.action = "Paused";
+
+        CaliperEventDetailsIdType _object = new CaliperEventDetailsIdType();
+        caliperMediaEvent._object = _object;
+        _object.id = "https://example.com/super-media-tool/video/1225";
+        _object.type = "VideoObject";
+
+        CaliperEventDetailsIdType target = new CaliperEventDetailsIdType();
+        caliperMediaEvent.target = target;
+        target.id = "Action button";
+        target.type = "MediaLocation";
+
+        // todo: hour offset, current time recorded is in local timezone
+        var now = System.DateTime.Now;
+        //var nowInstant = Instant.FromUtc(now.Year, now.Month, now.Day, now.TimeOfDay.Hours, now.TimeOfDay.Minutes); // can't convert to string :(
+        caliperMediaEvent.eventTime = 
+            now.Year + "-" + 
+            now.Month.ToString().PadLeft(2, '0') + "-" + 
+            now.Day.ToString().PadLeft(2, '0') + "T" + 
+            (now.TimeOfDay.Hours + hourOffset.ToString().PadLeft(2, '0') + ":" + 
+            now.TimeOfDay.Minutes.ToString().PadLeft(2, '0') + ":" + 
+            now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "Z";
+
+        CaliperEventDetailsIdTypeName edApp = new CaliperEventDetailsIdTypeName();
+        caliperMediaEvent.edApp = edApp;
+        edApp.id = "https://example.com/super-media-tool";
+        edApp.type = "SoftwareApplication";
+        edApp.name = "Super Media Tool";
+
+        // convert object to json string and edit typos
+
+        string json = JsonUtility.ToJson(caliperMediaEvent);
+        json = json.Replace("\"_object\"", "\"object\""); // remove underscore from object
+        json = json.Replace("\"context\"", "\"@context\""); // add @ to content
+
+        Debug.Log(">>>>> Content: " + json);
+
+        // push json to endpoint
+
+        Debug.Log(">>>>> Destination: " + pushURL);
+
+        var content = new StringContent(json, Encoding.UTF8, "application/json"); // middleman converting string to HTTPContent
+        var response = await client.PostAsync(pushURL, content);
+        var responseString = await response.Content.ReadAsStringAsync();
+        Debug.Log(">>>>> Response: " + responseString);
+    }
+}
+
+[Serializable]
+public class CaliperMediaEvent
+{
+    public string context; // needs to begin with @
+    public string id;
+    public string type;
+    public CaliperEventDetailsIdType actor;
+    public string action;
+    public CaliperEventDetailsIdType _object; // needs to be renamed to "object"
+    public CaliperEventDetailsIdType target;
+    public string eventTime;
+    public CaliperEventDetailsIdTypeName edApp;
+}
+
+[Serializable]
+public class CaliperEventDetailsIdType
+{
+    public string id;
+    public string type;
+}
+
+[Serializable]
+public class CaliperEventDetailsIdTypeName
+{
+    public string id;
+    public string type;
+    public string name;
 }
