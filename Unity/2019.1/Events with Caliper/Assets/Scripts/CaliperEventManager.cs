@@ -10,27 +10,25 @@ using ImsGlobal.Caliper.Events.Media;
 using NodaTime;
 using System;
 using System.Text;
+using System.Net.Http.Headers;
+using System.IO;
 
 public class CaliperEventManager : MonoBehaviour
 {
-    private string endpointID;
-
     private string deviceID;
 
-    public Button actionButton;
-    public Button testPushButton;
-    public Button customCaliperButton;
+    public Button caliperNetButton;
+    public Button customPushButton;
 
-    private static readonly HttpClient client = new HttpClient();
+    public string userBearerToken = "";
 
     // Start is called before the first frame update
     void Start()
     {
         deviceID = SystemInfo.deviceUniqueIdentifier; // unique for every device
 
-        actionButton.onClick.AddListener(ActionButtonEvent);
-        testPushButton.onClick.AddListener(TestPushButtonEventAsync);
-        customCaliperButton.onClick.AddListener(CustomCaliperButtonEventAsync);
+        caliperNetButton.onClick.AddListener(CaliperNetEvent);
+        customPushButton.onClick.AddListener(CustomPushButtonEventAsync);
     }
 
     // Update is called once per frame
@@ -39,12 +37,17 @@ public class CaliperEventManager : MonoBehaviour
 
     }
 
-    void ActionButtonEvent()
+    private void SetBearerToken()
     {
-        TestCaliperEventAsync();
+
     }
 
-    async void TestCaliperEventAsync() // should not return void
+    private void CaliperNetEvent()
+    {
+        TestCaliperNetEventAsync();
+    }
+
+    private async void TestCaliperNetEventAsync()
     {
         // this is the example code from the caliper-net readme file with some small changes.
         // this code will run from the editor and successfully send a caliper event to the
@@ -52,7 +55,7 @@ public class CaliperEventManager : MonoBehaviour
         
         var sensor = new CaliperSensor("milk-unity-caliper-test");
         System.Uri endpointURI = new System.Uri("https://lti.tools/caliper/event?key=milk");
-        string endpointId = sensor.RegisterEndpoint(new CaliperEndpointOptions(endpointURI));
+        string endpointID = sensor.RegisterEndpoint(new CaliperEndpointOptions(endpointURI));
 
         var now = System.DateTime.Now;
 
@@ -75,46 +78,24 @@ public class CaliperEventManager : MonoBehaviour
         Debug.Log(">>>>> Success: " + success);
     }
 
-    private async void TestPushButtonEventAsync() // should not return void
+
+
+    private async void CustomPushButtonEventAsync()
     {
-        await PostPushyamiEndpointAsync();
+        await PushCaliperEventAsync("http://lti.tools/caliper/event?key=milk", userBearerToken);
     }
 
-    private async System.Threading.Tasks.Task PostPushyamiEndpointAsync()
+    private async System.Threading.Tasks.Task PushCaliperEventAsync(string pushURL, string bearerTokenPath = "")
     {
-        // This will send a POST request to the endpoint specified
-        // This was written as a test to make sure that Unity and iOS
-        // could handle sending data to a server.
+        // create json file manually and send as PUSH request to endpoint
 
-        var values = new Dictionary<string, string>
-        {
-           { "data", "valid" }
-        };
-
-        var content = new FormUrlEncodedContent(values);
-
-        var response = await client.PostAsync("https://3eec5ec8-3d63-4c36-9789-52475ebc46d2.mock.pstmn.io/simpledata", content);
-
-        var responseString = await response.Content.ReadAsStringAsync();
-
-        Debug.Log(responseString);
-    }
-
-    private async void CustomCaliperButtonEventAsync()
-    {
-        await PushCaliperEventAsync("http://lti.tools/caliper/event?key=milk");
-        //await PushMediaEventAsync("https://postman-echo.com/post");
-    }
-
-    private async System.Threading.Tasks.Task PushCaliperEventAsync(string pushURL)
-    {
         // fill in data fields
 
         CaliperEvent caliperEvent = new CaliperEvent();
         caliperEvent.sensor = "sensor";
         caliperEvent.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
 
-        // todo: hour offset, current time recorded is in local timezone
+        // todo: make sure hour is correct for format
         var now = System.DateTime.Now;
         caliperEvent.sendTime =
             now.Year + "-" +
@@ -140,13 +121,25 @@ public class CaliperEventManager : MonoBehaviour
 
         Debug.Log(">>>>> Content: " + json);
 
+        
+
         // push json to endpoint
 
         Debug.Log(">>>>> Destination: " + pushURL);
 
         var content = new StringContent(json, Encoding.UTF8, "application/json"); // middleman converting string to HTTPContent
+
+        HttpClient client = new HttpClient();
+
+        if (bearerTokenPath != "")
+        {
+            string bearerTokenValue = new StreamReader(bearerTokenPath).ReadToEnd(); // get text from file containing bearer token
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerTokenValue); // add bearer token header
+        }
+
         var response = await client.PostAsync(pushURL, content);
         var responseString = await response.Content.ReadAsStringAsync();
+
         Debug.Log(">>>>> Status: " + response.StatusCode);
         Debug.Log(">>>>> Response: " + responseString);
     }
