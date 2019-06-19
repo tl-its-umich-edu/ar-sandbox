@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using ImsGlobal.Caliper;
 using ImsGlobal.Caliper.Entities.Agent;
 using ImsGlobal.Caliper.Entities.Media;
-using ImsGlobal.Caliper.Events;
 using ImsGlobal.Caliper.Events.Media;
 using NodaTime;
 using System;
@@ -103,58 +102,41 @@ public class CaliperEventManager : MonoBehaviour
 
     private async void CustomCaliperButtonEventAsync()
     {
-        await PushMediaEventAsync("http://lti.tools/caliper/event?key=milk");
+        await PushCaliperEventAsync("http://lti.tools/caliper/event?key=milk");
         //await PushMediaEventAsync("https://postman-echo.com/post");
     }
 
-    private async System.Threading.Tasks.Task PushMediaEventAsync(string pushURL)
+    private async System.Threading.Tasks.Task PushCaliperEventAsync(string pushURL)
     {
         // fill in data fields
 
-        CaliperMediaEvent caliperMediaEvent = new CaliperMediaEvent();
-        caliperMediaEvent.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
-        caliperMediaEvent.id = "event id";
-        caliperMediaEvent.type = "MediaEvent";
-
-        CaliperEventDetailsIdType actor = new CaliperEventDetailsIdType();
-        caliperMediaEvent.actor = actor;
-        actor.id = SystemInfo.deviceUniqueIdentifier;
-        actor.type = "Person";
-
-        caliperMediaEvent.action = "Paused";
-
-        CaliperEventDetailsIdType _object = new CaliperEventDetailsIdType();
-        caliperMediaEvent._object = _object;
-        _object.id = "https://example.com/super-media-tool/video/1225";
-        _object.type = "VideoObject";
-
-        CaliperEventDetailsIdType target = new CaliperEventDetailsIdType();
-        caliperMediaEvent.target = target;
-        target.id = "Action button";
-        target.type = "MediaLocation";
+        CaliperEvent caliperEvent = new CaliperEvent();
+        caliperEvent.sensor = "sensor";
+        caliperEvent.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
 
         // todo: hour offset, current time recorded is in local timezone
         var now = System.DateTime.Now;
-        //var nowInstant = Instant.FromUtc(now.Year, now.Month, now.Day, now.TimeOfDay.Hours, now.TimeOfDay.Minutes); // can't convert to string :(
-        caliperMediaEvent.eventTime = 
-            now.Year + "-" + 
-            now.Month.ToString().PadLeft(2, '0') + "-" + 
-            now.Day.ToString().PadLeft(2, '0') + "T" + 
-            (now.TimeOfDay.Hours + hourOffset.ToString().PadLeft(2, '0') + ":" + 
-            now.TimeOfDay.Minutes.ToString().PadLeft(2, '0') + ":" + 
+        caliperEvent.sendTime =
+            now.Year + "-" +
+            now.Month.ToString().PadLeft(2, '0') + "-" +
+            now.Day.ToString().PadLeft(2, '0') + "T" +
+            now.TimeOfDay.Hours.ToString().PadLeft(2, '0') + ":" +
+            now.TimeOfDay.Minutes.ToString().PadLeft(2, '0') + ":" +
             now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "Z";
 
-        CaliperEventDetailsIdTypeName edApp = new CaliperEventDetailsIdTypeName();
-        caliperMediaEvent.edApp = edApp;
-        edApp.id = "https://example.com/super-media-tool";
-        edApp.type = "SoftwareApplication";
-        edApp.name = "Super Media Tool";
+        CaliperEventData caliperEventData = new CaliperEventData();
+        caliperEvent.data.Add(caliperEventData);
+
+        caliperEventData.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
+        caliperEventData.actor = "actor";
+        caliperEventData.action = "action";
+        caliperEventData._object = "object";
 
         // convert object to json string and edit typos
 
-        string json = JsonUtility.ToJson(caliperMediaEvent);
-        json = json.Replace("\"_object\"", "\"object\""); // remove underscore from object
+        string json = JsonUtility.ToJson(caliperEvent);
         json = json.Replace("\"context\"", "\"@context\""); // add @ to content
+        json = json.Replace("\"_object\"", "\"object\""); // remove underscore from object
 
         Debug.Log(">>>>> Content: " + json);
 
@@ -165,35 +147,25 @@ public class CaliperEventManager : MonoBehaviour
         var content = new StringContent(json, Encoding.UTF8, "application/json"); // middleman converting string to HTTPContent
         var response = await client.PostAsync(pushURL, content);
         var responseString = await response.Content.ReadAsStringAsync();
+        Debug.Log(">>>>> Status: " + response.StatusCode);
         Debug.Log(">>>>> Response: " + responseString);
     }
 }
 
 [Serializable]
-public class CaliperMediaEvent
+public class CaliperEvent
 {
-    public string context; // needs to begin with @
-    public string id;
-    public string type;
-    public CaliperEventDetailsIdType actor;
+    public string sensor;
+    public string sendTime;
+    public string dataVersion;
+    public List<CaliperEventData> data = new List<CaliperEventData>();
+}
+
+[Serializable]
+public class CaliperEventData
+{
+    public string context; // needs to begin with @ when converted to json string
+    public string actor;
     public string action;
-    public CaliperEventDetailsIdType _object; // needs to be renamed to "object"
-    public CaliperEventDetailsIdType target;
-    public string eventTime;
-    public CaliperEventDetailsIdTypeName edApp;
-}
-
-[Serializable]
-public class CaliperEventDetailsIdType
-{
-    public string id;
-    public string type;
-}
-
-[Serializable]
-public class CaliperEventDetailsIdTypeName
-{
-    public string id;
-    public string type;
-    public string name;
+    public string _object; // remove _ when converted to json string
 }
