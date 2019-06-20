@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// todo add good comments
-// todo delete notes from list of notes
-// fixme keep note in same rotation and position relative to anchor
+// todo: delete notes from list of notes
+// fixme: save notes in position and rotation relative to anchor
 
 public class CreateNotes : MonoBehaviour
 {
@@ -31,6 +31,8 @@ public class CreateNotes : MonoBehaviour
 
     private InfoTextBehavior infoTextBehavior;
 
+    private CaliperEventCreator caliperEventCreatorScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +51,11 @@ public class CreateNotes : MonoBehaviour
         saveInputField.text = "save.dat";
 
         infoTextBehavior = GameObject.Find("Info Text (TMP)").GetComponent<InfoTextBehavior>();
+
+        caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
+
+
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "LoggedIn", "Note Creator Application", AnalyticsSessionInfo.sessionId.ToString(), "SessionEvent");
     }
 
     // Update is called once per frame
@@ -76,6 +83,8 @@ public class CreateNotes : MonoBehaviour
 
         // add note to list to be saved
         noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
+
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Place Note Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
     }
 
     private void DeleteNote()

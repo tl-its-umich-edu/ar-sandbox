@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class PersistentData : MonoBehaviour
 {
+    private CaliperEventCreator caliperEventCreatorScript;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
     }
 
     // Update is called once per frame
@@ -45,6 +48,8 @@ public class PersistentData : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, serNotesToSave);
         file.Close();
+
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Save Session Data Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
     }
 
     public List<NoteData> Load(string saveFileName)
@@ -75,6 +80,9 @@ public class PersistentData : MonoBehaviour
         {
             notes.Add(new NoteData(serNoteData.text, serNoteData.position, serNoteData.rotation, serNoteData.scale));
         }
+
+
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Load Session Data Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
 
         return notes;
     }
