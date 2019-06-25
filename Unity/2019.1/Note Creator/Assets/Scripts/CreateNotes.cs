@@ -36,11 +36,7 @@ public class CreateNotes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        placeButton.onClick.AddListener(() => {
-            PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
-            inputField.text = "";
-            }
-        );
+        placeButton.onClick.AddListener(PlaceButtonEvent);
         deleteButton.onClick.AddListener(DeleteNote);
 
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
@@ -138,6 +134,12 @@ public class CreateNotes : MonoBehaviour
         {
             placeButton.interactable = false;
         }
+    }
+
+    private void PlaceButtonEvent()
+    {
+        PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
+        inputField.text = "";
     }
 
     private void UpdateDeleteButton()
