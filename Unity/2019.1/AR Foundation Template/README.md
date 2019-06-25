@@ -1,6 +1,6 @@
 # Unity AR Foundation Template
 
-Unity version: 2019.1.2f1
+Unity version: 2019.1.8f1
 
 This Unity project is the same as an empty 3D Unity project aside from the following changes:
 
@@ -26,8 +26,8 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 
 ## Packages
 
-- AR Foundation version 2.1.0 has been added
-- ARKit XR Plugin version 2.1.0 has been added
+- AR Foundation version 2.1.0 preview 3 has been added
+- ARKit XR Plugin version 2.1.0 preview 5 has been added
 
 ## Build Settings
 
