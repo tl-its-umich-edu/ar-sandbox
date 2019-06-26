@@ -1,6 +1,6 @@
 # Unity AR Foundation Template
 
-Unity version: 2019.1.2f1
+Unity version: 2019.1.8f1
 
 This Unity project is the same as an empty 3D Unity project aside from the following changes:
 
@@ -14,7 +14,7 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 
 - Bundle Identifier has been changed to "edu.umich.milk.ARFoundationTemplate"
 - Requires ARKit Support has been checked
-- Target minimum iOS Version has been changed to 11.0
+- Target minimum iOS Version has been changed to 13.0
 - Architecture has been changed to ARM64
 
 ### Quality settings
@@ -26,8 +26,8 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 
 ## Packages
 
-- AR Foundation version 2.1.0 has been added
-- ARKit XR Plugin version 2.1.0 has been added
+- AR Foundation version 2.2.0 preview 2 has been added
+- ARKit XR Plugin version 2.2.0 preview 1 has been added
 
 ## Build Settings
 
@@ -36,3 +36,5 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 ## Scenes
 
 - A minimal AR scene has been created.
+- An AR Plane Manager and AR Raycast Manager component has been added to the AR Session object.
+- AR Session Origin has been scaled to 10 (helps with physics, all object in the scene display as 1/10th the size of what is shown in the editor)
