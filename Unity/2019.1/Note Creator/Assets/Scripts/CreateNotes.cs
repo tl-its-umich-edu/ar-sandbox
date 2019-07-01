@@ -9,6 +9,8 @@ using UnityEngine.XR.ARSubsystems;
 
 // todo: delete notes from list of notes
 // fixme: save notes in position and rotation relative to anchor
+// fixme: note text field doesnt clear if anchor is not detected
+// fixme: notes placed before anchor is detected wont be saved when an anchor is detected and notes are saved
 
 public class CreateNotes : MonoBehaviour
 {
@@ -41,7 +43,6 @@ public class CreateNotes : MonoBehaviour
 
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
 
-        //saveButton.onClick.AddListener(() => { saveScript.Save(saveInputField.text, noteToSave); });
         saveButton.onClick.AddListener(SaveNotes);
         loadButton.onClick.AddListener(LoadNotes);
         saveInputField.text = "save.dat";
@@ -51,7 +52,7 @@ public class CreateNotes : MonoBehaviour
         caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
 
 
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "LoggedIn", "Note Creator Application", AnalyticsSessionInfo.sessionId.ToString(), "SessionEvent");
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "LoggedIn", "Note Creator Application", "SessionEvent");
     }
 
     // Update is called once per frame
@@ -80,7 +81,7 @@ public class CreateNotes : MonoBehaviour
         // add note to list to be saved
         noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
 
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Place Note Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Place Note Tool", "ToolUseEvent");
     }
 
     private void DeleteNote()
@@ -132,13 +133,14 @@ public class CreateNotes : MonoBehaviour
         }
         else
         {
-            placeButton.interactable = false;
+            placeButton.interactable = false; // when debug, set to true
         }
     }
 
     private void PlaceButtonEvent()
     {
         PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
+        Debug.Log("clear note");
         inputField.text = "";
     }
 
@@ -163,7 +165,8 @@ public class CreateNotes : MonoBehaviour
             // caveat: only tests touches that are placed in succession.
             //         so it doesn't work if you place one finger on an object,
             //         another somewhere else, and a third on an the same object as finger one
-            //         and try to pinch with finger one and three.
+            //         and try to pinch with finger one and three. also doesnt work if finger
+            //         off of object during pinch.
             for (int i = 1; i <= Input.touchCount - 1; i++)
             {
                 Touch touch0 = Input.GetTouch(i - 1);
@@ -185,7 +188,6 @@ public class CreateNotes : MonoBehaviour
                         // and last frame and scale the object by the dividend.
 
                         GameObject touchedObject = touch0Hit.transform.gameObject;
-                        Debug.Log(touchedObject.GetInstanceID());
 
                         Vector2 touch0LastPos = touch0.position - touch0.deltaPosition;
                         Vector2 touch1LastPos = touch1.position - touch1.deltaPosition;

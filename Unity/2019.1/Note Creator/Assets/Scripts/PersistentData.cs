@@ -49,7 +49,7 @@ public class PersistentData : MonoBehaviour
         bf.Serialize(file, serNotesToSave);
         file.Close();
 
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Save Session Data Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Save Session Data Tool", "ToolUseEvent");
     }
 
     public List<NoteData> Load(string saveFileName)
@@ -64,7 +64,7 @@ public class PersistentData : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Save file not found");
+            Debug.LogError(">>>>> Save file not found");
             return null;
         }
 
@@ -82,7 +82,7 @@ public class PersistentData : MonoBehaviour
         }
 
 
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Load Session Data Tool", AnalyticsSessionInfo.sessionId.ToString(), "ToolUseEvent");
+        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Load Session Data Tool", "ToolUseEvent");
 
         return notes;
     }

@@ -73,17 +73,7 @@ public class ImageDetection : MonoBehaviour
 
         foreach (var trackedImage in eventArgs.updated)
         {
-            var overlay = trackedImage.transform.GetChild(0).gameObject;
 
-            if (trackedImage.trackingState != TrackingState.None)
-            {
-
-                overlay.SetActive(true);
-            }
-            else
-            {
-                overlay.SetActive(false);
-            }
         }
 
         foreach (var trackedImage in eventArgs.removed)
