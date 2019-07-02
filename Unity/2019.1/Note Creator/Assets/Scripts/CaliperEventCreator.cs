@@ -51,6 +51,7 @@ public class CaliperEventCreator : MonoBehaviour
 		caliperEventData.action = action;
 		caliperEventData._object = _object;
         caliperEventData.eventTime = caliperEvent.sendTime;
+        caliperEventData.edApp = "note-creator_ar";
 
 		// convert object to json string and edit typos
 
@@ -108,4 +109,5 @@ public class CaliperEventData
 	public string action;
 	public string _object; // remove _ when converted to json string
     public string eventTime;
+    public string edApp;
 }
