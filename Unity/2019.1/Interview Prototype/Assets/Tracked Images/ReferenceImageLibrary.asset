@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: ReferenceImageLibrary
+  m_EditorClassIdentifier: 
+  m_GuidLow: 5014910872617067653
+  m_GuidHigh: 11861603538440750236
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 5212168148592363136
+      m_GuidHigh: 16331010269775070852
+    m_SerializedTextureGuid:
+      m_GuidLow: 9531406458878929017
+      m_GuidHigh: 14313865023025699881
+    m_Size: {x: 0.08, y: 0.08022346}
+    m_SpecifySize: 1
+    m_Name: hiro tracker image
+    m_Texture: {fileID: 0}
