@@ -7,9 +7,10 @@ using UnityEngine;
 
 public class CaliperEventCreator : MonoBehaviour
 {
-    //public string thisPushURL = "http://lti.tools/caliper/event?key=milk";
-    public string thisPushURL = "https://umich.caliper.dev.cloud.unizin.org/";
     public TextAsset thisBearerTokenFile;
+
+    private string thisPushURL = "https://umich.caliper.dev.cloud.unizin.org/"; // udp
+    //private string thisPushURL = "http://lti.tools/caliper/event?key=milk"; // test endpoint
 
     // Start is called before the first frame update
     void Start()
@@ -74,8 +75,8 @@ public class CaliperEventCreator : MonoBehaviour
 
 		if (bearerTokenFile != null)
 		{
-            Debug.Log(">>>>> Bearer Token: " + bearerTokenFile.text);
 			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerTokenFile.text); // add bearer token header
+            Debug.Log(">>>>> Bearer Token Loaded");
 		}
         else
         {
@@ -83,7 +84,8 @@ public class CaliperEventCreator : MonoBehaviour
         }
 
 		var response = await client.PostAsync(pushURL, content);
-		var responseString = await response.Content.ReadAsStringAsync();
+
+        var responseString = await response.Content.ReadAsStringAsync();
 
 		Debug.Log(">>>>> Status: " + response.StatusCode);
 		Debug.Log(">>>>> Response: " + responseString);

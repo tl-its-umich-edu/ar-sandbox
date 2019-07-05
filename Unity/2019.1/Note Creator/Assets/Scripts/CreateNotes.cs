@@ -7,10 +7,11 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// todo: delete notes from list of notes
+// fixme: deleted notes arent removed from list of notes to save
+// todo: add notes placed before anchor detected to list of notes to save
 // fixme: save notes in position and rotation relative to anchor
-// fixme: note text field doesnt clear if anchor is not detected
 // fixme: notes placed before anchor is detected wont be saved when an anchor is detected and notes are saved
+// fixme: loaded notes rotate based on orientation of device for some reason
 
 public class CreateNotes : MonoBehaviour
 {
@@ -79,7 +80,10 @@ public class CreateNotes : MonoBehaviour
         newNoteScript.changeNoteText(text);
 
         // add note to list to be saved
-        noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
+        if (anchorObject != null)
+        {
+            noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
+        }
 
         caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Place Note Tool", "ToolUseEvent");
     }

@@ -5,9 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.ARFoundation;
 
-// todo: set tracking to one image only and set as anchor image
-// todo: make anchors selectable?
-
 public class ImageDetection : MonoBehaviour
 {
     public GameObject nameplatePrefab;
@@ -63,8 +60,6 @@ public class ImageDetection : MonoBehaviour
                     GameObject hiroObj = Instantiate(hiroPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
                     hiroObj.transform.parent = trackedImage.transform;
                     hiroObj.name = "hiro";
-
-                    createNotesScript.SetAnchorObject(hiroObj);
 
                     break;
             }
