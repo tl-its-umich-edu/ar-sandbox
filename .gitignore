@@ -64,3 +64,5 @@ crashlytics-build.properties
 
 .DS_Store
 
+*.bearertoken.txt
+*.bearertoken.txt.meta
