@@ -30,7 +30,7 @@ public class CaliperEventCreator : MonoBehaviour
 		caliperEvent.sensor = "sensor";
 		caliperEvent.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
 
-		var now = System.DateTime.Now;
+		var now = System.DateTime.UtcNow;
 		caliperEvent.sendTime =
 			now.Year + "-" +
 			now.Month.ToString().PadLeft(2, '0') + "-" +
