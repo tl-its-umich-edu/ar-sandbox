@@ -12,10 +12,12 @@ public class ImageDetection : MonoBehaviour
 
     private ARTrackedImageManager trackedImageManager;
 
+    private CaliperEventCreator caliperEventCreatorScript;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
     }
 
     // Update is called once per frame
@@ -63,6 +65,8 @@ public class ImageDetection : MonoBehaviour
 
                     break;
             }
+
+            caliperEventCreatorScript.ImageIdentified(trackedImage.referenceImage.name, trackedImage.referenceImage.guid.ToString());
 
         }
 

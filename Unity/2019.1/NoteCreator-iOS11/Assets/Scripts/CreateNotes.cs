@@ -7,11 +7,10 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-// fixme: deleted notes arent removed from list of notes to save
+// todo: fix some of the event fields to make more sense
 // todo: add notes placed before anchor detected to list of notes to save
-// fixme: save notes in position and rotation relative to anchor
-// fixme: notes placed before anchor is detected wont be saved when an anchor is detected and notes are saved
-// fixme: loaded notes rotate based on orientation of device for some reason
+// fixme: save notes in position and rotation relative to anchor instead of device
+// todo: reset session button - clear all notes and send new SessionLoggedIn event
 
 public class CreateNotes : MonoBehaviour
 {
@@ -30,7 +29,6 @@ public class CreateNotes : MonoBehaviour
     public Button saveButton, loadButton;
     public TMP_InputField saveInputField;
     private GameObject anchorObject = null;
-    private List<NoteData> noteSaveDataList = new List<NoteData>();
 
     private InfoTextBehavior infoTextBehavior;
 
@@ -39,21 +37,19 @@ public class CreateNotes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        placeButton.onClick.AddListener(PlaceButtonEvent);
-        deleteButton.onClick.AddListener(DeleteNote);
-
+        // init stuff
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
 
+        placeButton.onClick.AddListener(PlaceButtonEvent);
+        deleteButton.onClick.AddListener(DeleteNote);
         saveButton.onClick.AddListener(SaveNotes);
         loadButton.onClick.AddListener(LoadNotes);
+
         saveInputField.text = "save.dat";
 
         infoTextBehavior = GameObject.Find("Info Text (TMP)").GetComponent<InfoTextBehavior>();
 
         caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
-
-
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "LoggedIn", "Note Creator Application", "SessionEvent");
     }
 
     // Update is called once per frame
@@ -69,7 +65,7 @@ public class CreateNotes : MonoBehaviour
 
         pinchToZoomNote();
     }
-
+    
     private void PlaceNote(string text, Vector3 position, Quaternion rotation, float scale)
     {
         GameObject newNote = Instantiate(notePrefab, position, rotation) as GameObject;
@@ -79,17 +75,15 @@ public class CreateNotes : MonoBehaviour
         NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
         newNoteScript.changeNoteText(text);
 
-        // add note to list to be saved
-        if (anchorObject != null)
-        {
-            noteSaveDataList.Add(new NoteData(text, position - anchorObject.transform.position, rotation, scale));
-        }
-
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Place Note Tool", "ToolUseEvent");
+        caliperEventCreatorScript.NoteCreated(newNote.GetInstanceID().ToString(), text);
     }
 
     private void DeleteNote()
     {
+        var noteToDelete = deleteRayHit.transform.gameObject;
+
+        caliperEventCreatorScript.NoteDeleted(noteToDelete.GetInstanceID().ToString(), noteToDelete.GetComponentInChildren<TMP_Text>().text);
+        
         Destroy(deleteRayHit.transform.gameObject);
     }
 
@@ -137,14 +131,13 @@ public class CreateNotes : MonoBehaviour
         }
         else
         {
-            placeButton.interactable = false; // when debug, set to true
+            placeButton.interactable = false; // to place notes in editor, set to true
         }
     }
 
     private void PlaceButtonEvent()
     {
         PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
-        Debug.Log("clear note");
         inputField.text = "";
     }
 
@@ -206,9 +199,20 @@ public class CreateNotes : MonoBehaviour
 
     private void SaveNotes()
     {
+        // build list of notes to save
+
+        List<NoteData> noteSaveDataList = new List<NoteData>();
+
+        foreach (var noteObj in GameObject.FindGameObjectsWithTag("Note"))
+        {
+            noteSaveDataList.Add(new NoteData(noteObj.GetComponentInChildren<TMP_Text>().text, noteObj.transform.position - anchorObject.transform.position, noteObj.transform.rotation, noteObj.transform.localScale.x));
+        }
+
         var saveScript = GetComponent<PersistentData>();
         saveScript.Save(saveInputField.text, noteSaveDataList);
         infoTextBehavior.SetMessage(2f, Color.green, "Note saved!");
+
+        caliperEventCreatorScript.NoteSaved(saveInputField.text, noteSaveDataList.Count.ToString());
     }
 
     private void LoadNotes()
@@ -227,6 +231,8 @@ public class CreateNotes : MonoBehaviour
         {
             infoTextBehavior.SetMessage(2f, Color.red, "No data to load.");
         }
+
+        caliperEventCreatorScript.NoteLoaded(saveInputField.text, loadedNotes.Count.ToString());
     }
 
     public void SetAnchorObject(GameObject newAnchorObject)
@@ -236,7 +242,7 @@ public class CreateNotes : MonoBehaviour
 
     private void UpdateSaveButton()
     {
-        if (anchorObject != null && noteSaveDataList.Count > 0)
+        if (anchorObject != null && GameObject.FindGameObjectsWithTag("Note").Length > 0)
         {
             saveButton.interactable = true;
         }

@@ -735,7 +735,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c39621e498ef143d98fd2fc7e330f6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisPushURL: https://umich.caliper.dev.cloud.unizin.org/
   thisBearerTokenFile: {fileID: 4900000, guid: a7ec6c085eeeb49d0b3281a65e1dd0dd, type: 3}
 --- !u!114 &223974231
 MonoBehaviour:

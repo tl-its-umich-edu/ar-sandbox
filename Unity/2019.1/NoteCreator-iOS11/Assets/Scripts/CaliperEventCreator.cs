@@ -12,10 +12,24 @@ public class CaliperEventCreator : MonoBehaviour
     private string thisPushURL = "https://umich.caliper.dev.cloud.unizin.org/"; // udp
     //private string thisPushURL = "http://lti.tools/caliper/event?key=milk"; // test endpoint
 
+    private SessionLoggedIn sessionLoggedIn;
+    private NoteCreated noteCreated;
+    private NoteDeleted noteDeleted;
+    private NoteSaved noteSaved;
+    private NoteLoaded noteLoaded;
+    private ImageIdentified imageIdentified;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        // load caliper event templates
+
+        sessionLoggedIn = (SessionLoggedIn)gameObject.AddComponent(typeof(SessionLoggedIn));
+        noteCreated = (NoteCreated)gameObject.AddComponent(typeof(NoteCreated));
+        noteDeleted = (NoteDeleted)gameObject.AddComponent(typeof(NoteDeleted));
+        noteSaved = (NoteSaved)gameObject.AddComponent(typeof(NoteSaved));
+        noteLoaded = (NoteLoaded)gameObject.AddComponent(typeof(NoteLoaded));
+        imageIdentified = (ImageIdentified)gameObject.AddComponent(typeof(ImageIdentified));
     }
 
     // Update is called once per frame
@@ -24,46 +38,47 @@ public class CaliperEventCreator : MonoBehaviour
         
     }
 
-    public async void CreateCaliperEventAsync(string actor, string action, string _object, string type = "")
-	{
-		CaliperEvent caliperEvent = new CaliperEvent();
-		caliperEvent.sensor = "sensor";
-		caliperEvent.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
-
-		var now = System.DateTime.UtcNow;
-		caliperEvent.sendTime =
-			now.Year + "-" +
-			now.Month.ToString().PadLeft(2, '0') + "-" +
-			now.Day.ToString().PadLeft(2, '0') + "T" +
-			now.TimeOfDay.Hours.ToString().PadLeft(2, '0') + ":" +
-			now.TimeOfDay.Minutes.ToString().PadLeft(2, '0') + ":" +
-			now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "." +
-            now.TimeOfDay.Milliseconds.ToString().PadLeft(3, '0') + "Z";
-
-        CaliperEventData caliperEventData = new CaliperEventData();
-		caliperEvent.data.Add(caliperEventData);
-
-		caliperEventData.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
-
-        caliperEventData.id = "urn:uuid:" + Guid.NewGuid().ToString();
-
-        caliperEventData.type = type;
-        caliperEventData.actor = actor;
-		caliperEventData.action = action;
-		caliperEventData._object = _object;
-        caliperEventData.eventTime = caliperEvent.sendTime;
-        caliperEventData.edApp = "note-creator_ar";
-
-		// convert object to json string and edit typos
-
-		string json = JsonUtility.ToJson(caliperEvent);
-		json = json.Replace("\"context\"", "\"@context\""); // add @ to content
-		json = json.Replace("\"_object\"", "\"object\""); // remove underscore from object
-
-		Debug.Log(">>>>> Content: " + json);
+    public async void SessionLoggedIn()
+    {
+        string json = sessionLoggedIn.CreateEvent();
 
         await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
-	}
+    }
+
+    public async void NoteCreated(string noteObjectId, string noteObjectDesc)
+    {
+        string json = noteCreated.CreateEvent(noteObjectId, noteObjectDesc);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
+
+    public async void NoteDeleted(string noteObjectId, string noteObjectDesc)
+    {
+        string json = noteDeleted.CreateEvent(noteObjectId, noteObjectDesc);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
+
+    public async void NoteSaved(string noteObjectId, string noteObjectDesc)
+    {
+        string json = noteSaved.CreateEvent(noteObjectId, noteObjectDesc);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
+
+    public async void NoteLoaded(string noteObjectId, string noteObjectDesc)
+    {
+        string json = noteLoaded.CreateEvent(noteObjectId, noteObjectDesc);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
+
+    public async void ImageIdentified(string imageName, string imageId)
+    {
+        string json = imageIdentified.CreateEvent(imageName, imageId);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
 
     private async System.Threading.Tasks.Task PushCaliperEventAsync(string json, string pushURL, TextAsset bearerTokenFile)
 	{
@@ -90,26 +105,4 @@ public class CaliperEventCreator : MonoBehaviour
 		Debug.Log(">>>>> Status: " + response.StatusCode);
 		Debug.Log(">>>>> Response: " + responseString);
 	}
-}
-
-[Serializable]
-public class CaliperEvent
-{
-	public string sensor;
-	public string sendTime;
-	public string dataVersion;
-	public List<CaliperEventData> data = new List<CaliperEventData>();
-}
-
-[Serializable]
-public class CaliperEventData
-{
-	public string context; // needs to begin with @ when converted to json string
-    public string id;
-    public string type;
-	public string actor;
-	public string action;
-	public string _object; // remove _ when converted to json string
-    public string eventTime;
-    public string edApp;
 }

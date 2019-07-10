@@ -48,8 +48,6 @@ public class PersistentData : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, serNotesToSave);
         file.Close();
-
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Save Session Data Tool", "ToolUseEvent");
     }
 
     public List<NoteData> Load(string saveFileName)
@@ -80,9 +78,6 @@ public class PersistentData : MonoBehaviour
         {
             notes.Add(new NoteData(serNoteData.text, serNoteData.position, serNoteData.rotation, serNoteData.scale));
         }
-
-
-        caliperEventCreatorScript.CreateCaliperEventAsync(SystemInfo.deviceName, "Used", "Load Session Data Tool", "ToolUseEvent");
 
         return notes;
     }
