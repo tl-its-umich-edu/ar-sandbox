@@ -8,7 +8,6 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 // todo: fix some of the event fields to make more sense
-// todo: add notes placed before anchor detected to list of notes to save
 // fixme: save notes in position and rotation relative to anchor instead of device
 // todo: reset session button - clear all notes and send new SessionLoggedIn event
 
@@ -200,16 +199,16 @@ public class CreateNotes : MonoBehaviour
     private void SaveNotes()
     {
         // build list of notes to save
-
         List<NoteData> noteSaveDataList = new List<NoteData>();
-
         foreach (var noteObj in GameObject.FindGameObjectsWithTag("Note"))
         {
             noteSaveDataList.Add(new NoteData(noteObj.GetComponentInChildren<TMP_Text>().text, noteObj.transform.position - anchorObject.transform.position, noteObj.transform.rotation, noteObj.transform.localScale.x));
         }
 
+        // save notes to file
         var saveScript = GetComponent<PersistentData>();
         saveScript.Save(saveInputField.text, noteSaveDataList);
+
         infoTextBehavior.SetMessage(2f, Color.green, "Note saved!");
 
         caliperEventCreatorScript.NoteSaved(saveInputField.text, noteSaveDataList.Count.ToString());

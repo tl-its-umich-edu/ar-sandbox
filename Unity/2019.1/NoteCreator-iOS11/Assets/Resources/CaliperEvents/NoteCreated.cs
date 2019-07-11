@@ -43,7 +43,7 @@ public class NoteCreated : MonoBehaviour
         actor.type = "Person";
 
         data.actor = actor;
-        data.action = "Deleted";
+        data.action = "Created";
 
         CaliperEventNoteCreatedDataObject _object = new CaliperEventNoteCreatedDataObject();
         _object.id = "urn:umich:artool:notecreator:" + noteObjectId;
