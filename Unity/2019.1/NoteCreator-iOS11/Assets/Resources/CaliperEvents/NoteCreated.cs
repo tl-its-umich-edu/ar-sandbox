@@ -17,7 +17,12 @@ public class NoteCreated : MonoBehaviour
 
     }
 
-    public string CreateEvent(string noteObjectId, string noteObjectDesc, string orientation = "horizontal", string notePlaced = "vertical")
+    public string CreateEvent(
+        string noteObjectId,
+        string noteObjectDesc,
+        string deviceOrientation,
+        string noteScale,
+        string noteOrientation)
     {
         CaliperEventNoteCreated ce = new CaliperEventNoteCreated();
         ce.sensor = "sensor";
@@ -51,8 +56,9 @@ public class NoteCreated : MonoBehaviour
         _object.type = "DigitalResource";
 
         CaliperEventNoteCreatedDataObjectExtensions objectExtensions = new CaliperEventNoteCreatedDataObjectExtensions();
-        objectExtensions.orientation = orientation;
-        objectExtensions.notePlaced = notePlaced;
+        objectExtensions.deviceOrientation = deviceOrientation;
+        objectExtensions.noteScale = noteScale;
+        objectExtensions.noteOrientation = noteOrientation;
 
         _object.extensions = objectExtensions;
 
@@ -115,6 +121,7 @@ public class CaliperEventNoteCreatedDataObject
 [Serializable]
 public class CaliperEventNoteCreatedDataObjectExtensions
 {
-    public string orientation;
-    public string notePlaced;
+    public string deviceOrientation;
+    public string noteScale;
+    public string noteOrientation;
 }

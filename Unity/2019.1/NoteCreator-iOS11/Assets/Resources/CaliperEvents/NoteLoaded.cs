@@ -50,12 +50,6 @@ public class NoteLoaded : MonoBehaviour
         _object.description = noteObjectDesc;
         _object.type = "DigitalResource";
 
-        CaliperEventNoteLoadedDataObjectExtensions objectExtensions = new CaliperEventNoteLoadedDataObjectExtensions();
-        objectExtensions.orientation = orientation;
-        objectExtensions.notePlaced = notePlaced;
-
-        _object.extensions = objectExtensions;
-
         data._object = _object;
         data.eventTime = ce.sendTime;
         data.edApp = "note-creator_ar";
@@ -109,12 +103,4 @@ public class CaliperEventNoteLoadedDataObject
     public string id;
     public string description;
     public string type;
-    public CaliperEventNoteLoadedDataObjectExtensions extensions;
-}
-
-[Serializable]
-public class CaliperEventNoteLoadedDataObjectExtensions
-{
-    public string orientation;
-    public string notePlaced;
 }

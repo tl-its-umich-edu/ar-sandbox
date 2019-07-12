@@ -31,7 +31,7 @@ public class NoteDeleted : MonoBehaviour
             now.TimeOfDay.Hours.ToString().PadLeft(2, '0') + ":" +
             now.TimeOfDay.Minutes.ToString().PadLeft(2, '0') + ":" +
             now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "." +
-            now.TimeOfDay.Milliseconds.ToString().PadLeft(3, '0') + "Z";
+            now.TimeOfDay.Milliseconds.ToString().Substring(0, 3).PadLeft(3, '0') + "Z";
 
         CaliperEventNoteDeletedData data = new CaliperEventNoteDeletedData();
         data.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
@@ -49,12 +49,6 @@ public class NoteDeleted : MonoBehaviour
         _object.id = "urn:umich:artool:notecreator:" + noteObjectId;
         _object.description = noteObjectDesc;
         _object.type = "DigitalResource";
-
-        CaliperEventNoteDeletedDataObjectExtensions objectExtensions = new CaliperEventNoteDeletedDataObjectExtensions();
-        objectExtensions.orientation = orientation;
-        objectExtensions.notePlaced = notePlaced;
-
-        _object.extensions = objectExtensions;
 
         data._object = _object;
         data.eventTime = ce.sendTime;
@@ -109,12 +103,4 @@ public class CaliperEventNoteDeletedDataObject
     public string id;
     public string description;
     public string type;
-    public CaliperEventNoteDeletedDataObjectExtensions extensions;
-}
-
-[Serializable]
-public class CaliperEventNoteDeletedDataObjectExtensions
-{
-    public string orientation;
-    public string notePlaced;
 }

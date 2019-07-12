@@ -45,9 +45,9 @@ public class CaliperEventCreator : MonoBehaviour
         await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
     }
 
-    public async void NoteCreated(string noteObjectId, string noteObjectDesc)
+    public async void NoteCreated(string noteObjectId, string noteObjectDesc, string deviceOrientation = "N/A", string noteScale = "1", string noteOrientation = "N/A")
     {
-        string json = noteCreated.CreateEvent(noteObjectId, noteObjectDesc);
+        string json = noteCreated.CreateEvent(noteObjectId, noteObjectDesc, deviceOrientation, noteScale, noteOrientation);
 
         await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
     }

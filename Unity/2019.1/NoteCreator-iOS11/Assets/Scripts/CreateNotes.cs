@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Analytics;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
@@ -33,6 +34,8 @@ public class CreateNotes : MonoBehaviour
 
     private CaliperEventCreator caliperEventCreatorScript;
 
+    private 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +47,7 @@ public class CreateNotes : MonoBehaviour
         deleteButton.onClick.AddListener(DeleteNote);
         saveButton.onClick.AddListener(SaveNotes);
         loadButton.onClick.AddListener(LoadNotes);
-        resetButton.onClick.AddListener(RemoveAllNotes);
+        resetButton.onClick.AddListener(ReloadScene);
 
         saveInputField.text = "save.dat";
 
@@ -142,7 +145,16 @@ public class CreateNotes : MonoBehaviour
     {
         var newNote = PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
 
-        caliperEventCreatorScript.NoteCreated(newNote.GetInstanceID().ToString(), inputField.text);
+        string newNoteOrientation;
+        if (newNote.transform.rotation.eulerAngles.x < 10) newNoteOrientation = "Horizontal";
+        else newNoteOrientation = "Vertical";
+
+        caliperEventCreatorScript.NoteCreated(
+            newNote.GetInstanceID().ToString(),
+            inputField.text,
+            Input.deviceOrientation.ToString(),
+            noteSizeSlider.value.ToString(),
+            newNoteOrientation);
 
         inputField.text = "";
     }
@@ -270,14 +282,8 @@ public class CreateNotes : MonoBehaviour
         }
     }
 
-    private void RemoveAllNotes()
+    private void ReloadScene()
     {
-        foreach (var noteObj in GameObject.FindGameObjectsWithTag("Note"))
-        {
-            Destroy(noteObj);
-        }
-
-        // signify new session with caliper
-        caliperEventCreatorScript.SessionLoggedIn();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
