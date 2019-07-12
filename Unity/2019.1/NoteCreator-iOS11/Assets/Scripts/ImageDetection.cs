@@ -9,6 +9,9 @@ public class ImageDetection : MonoBehaviour
 {
     public GameObject nameplatePrefab;
     public GameObject hiroPrefab;
+    public Button resetButton;
+
+    CreateNotes createNotesScript;
 
     private ARTrackedImageManager trackedImageManager;
 
@@ -18,6 +21,10 @@ public class ImageDetection : MonoBehaviour
     void Start()
     {
         caliperEventCreatorScript = GetComponent<CaliperEventCreator>();
+
+        createNotesScript = GameObject.Find("Interaction").GetComponent<CreateNotes>();
+
+        resetButton.onClick.AddListener(ResetTrackedObjects);
     }
 
     // Update is called once per frame
@@ -45,8 +52,6 @@ public class ImageDetection : MonoBehaviour
     {
         foreach (var trackedImage in eventArgs.added)
         {
-            CreateNotes createNotesScript = GameObject.Find("Interaction").GetComponent<CreateNotes>();
-
             switch (trackedImage.referenceImage.name)
             {
                 case "nameplate amanda":
@@ -57,6 +62,7 @@ public class ImageDetection : MonoBehaviour
                     createNotesScript.SetAnchorObject(nameplateObj);
 
                     break;
+
 
                 case "hiro":
                     GameObject hiroObj = Instantiate(hiroPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
@@ -79,5 +85,20 @@ public class ImageDetection : MonoBehaviour
         {
 
         }
+    }
+
+    private void ResetTrackedObjects()
+    {
+        // reset anchor object
+        createNotesScript.SetAnchorObject(null);
+
+        // destroy created prefabs
+        //Destroy(GameObject.Find("nameplate"));
+        //Destroy(GameObject.Find("hiro"));
+
+        // reset tracked images
+
+        // note sure how to do it... i assume that you have to manipulate the ARTrackedImageManager to forget the images it saw
+        
     }
 }

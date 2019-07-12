@@ -43,7 +43,7 @@ public class NoteSaved : MonoBehaviour
         actor.type = "Person";
 
         data.actor = actor;
-        data.action = "Saved";
+        data.action = "Posted";
 
         CaliperEventNoteSavedDataObject _object = new CaliperEventNoteSavedDataObject();
         _object.id = "urn:umich:artool:notecreator:" + noteObjectId;

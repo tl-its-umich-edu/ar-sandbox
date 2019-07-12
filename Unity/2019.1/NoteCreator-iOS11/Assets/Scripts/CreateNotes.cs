@@ -17,7 +17,7 @@ public class CreateNotes : MonoBehaviour
     public GameObject notePrefab;
     public TMP_InputField inputField;
     public Slider noteSizeSlider;
-    public Button placeButton, deleteButton;
+    public Button placeButton, deleteButton, dockPlaceButton, resetButton;
 
     private ARRaycastManager arRaycastManager;
     private Pose placementPose;
@@ -40,9 +40,11 @@ public class CreateNotes : MonoBehaviour
         arRaycastManager = FindObjectOfType<ARRaycastManager>();
 
         placeButton.onClick.AddListener(PlaceButtonEvent);
+        dockPlaceButton.onClick.AddListener(PlaceButtonEvent);
         deleteButton.onClick.AddListener(DeleteNote);
         saveButton.onClick.AddListener(SaveNotes);
         loadButton.onClick.AddListener(LoadNotes);
+        resetButton.onClick.AddListener(RemoveAllNotes);
 
         saveInputField.text = "save.dat";
 
@@ -65,7 +67,7 @@ public class CreateNotes : MonoBehaviour
         pinchToZoomNote();
     }
     
-    private void PlaceNote(string text, Vector3 position, Quaternion rotation, float scale)
+    private GameObject PlaceNote(string text, Vector3 position, Quaternion rotation, float scale)
     {
         GameObject newNote = Instantiate(notePrefab, position, rotation) as GameObject;
         newNote.transform.localScale *= scale;
@@ -74,7 +76,7 @@ public class CreateNotes : MonoBehaviour
         NoteBehavior newNoteScript = newNote.GetComponent<NoteBehavior>();
         newNoteScript.changeNoteText(text);
 
-        caliperEventCreatorScript.NoteCreated(newNote.GetInstanceID().ToString(), text);
+        return newNote;
     }
 
     private void DeleteNote()
@@ -127,16 +129,21 @@ public class CreateNotes : MonoBehaviour
         if (placementPoseIsValid && inputField.text != "")
         {
             placeButton.interactable = true;
+            dockPlaceButton.interactable = true;
         }
         else
         {
             placeButton.interactable = false; // to place notes in editor, set to true
+            dockPlaceButton.interactable = false;
         }
     }
 
     private void PlaceButtonEvent()
     {
-        PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
+        var newNote = PlaceNote(inputField.text, placementPose.position, placementPose.rotation, noteSizeSlider.value);
+
+        caliperEventCreatorScript.NoteCreated(newNote.GetInstanceID().ToString(), inputField.text);
+
         inputField.text = "";
     }
 
@@ -162,7 +169,7 @@ public class CreateNotes : MonoBehaviour
             //         so it doesn't work if you place one finger on an object,
             //         another somewhere else, and a third on an the same object as finger one
             //         and try to pinch with finger one and three. also doesnt work if finger
-            //         off of object during pinch.
+            //         moves off of object during pinch.
             for (int i = 1; i <= Input.touchCount - 1; i++)
             {
                 Touch touch0 = Input.GetTouch(i - 1);
@@ -261,5 +268,16 @@ public class CreateNotes : MonoBehaviour
         {
             loadButton.interactable = false;
         }
+    }
+
+    private void RemoveAllNotes()
+    {
+        foreach (var noteObj in GameObject.FindGameObjectsWithTag("Note"))
+        {
+            Destroy(noteObj);
+        }
+
+        // signify new session with caliper
+        caliperEventCreatorScript.SessionLoggedIn();
     }
 }
