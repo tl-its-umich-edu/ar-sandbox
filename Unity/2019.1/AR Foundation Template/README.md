@@ -26,8 +26,8 @@ This Unity project is the same as an empty 3D Unity project aside from the follo
 
 ## Packages
 
-- AR Foundation version 2.2.0 preview 2 has been added
-- ARKit XR Plugin version 2.2.0 preview 1 has been added
+- AR Foundation version 2.2.0 preview 3 has been added
+- ARKit XR Plugin version 2.2.0 preview 3 has been added
 
 ## Build Settings
 
