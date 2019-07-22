@@ -13,13 +13,17 @@ public class ARNoteCreation : MonoBehaviour
     private float lerpSpeed = .5f;
 
     private SurfaceDetection surfaceDetection;
+    private CaliperEventHandler caliperEventHandler;
 
     // Start is called before the first frame update
     void Start()
     {
         surfaceDetection = GetComponent<SurfaceDetection>();
+        caliperEventHandler = GetComponent<CaliperEventHandler>();
 
         placeButton.onClick.AddListener(placeButtonEvent);
+
+        caliperEventHandler.SessionLoggedIn();
     }
 
     // Update is called once per frame
