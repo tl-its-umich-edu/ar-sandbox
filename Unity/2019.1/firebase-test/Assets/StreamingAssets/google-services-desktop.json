@@ -1,0 +1,37 @@
+{
+  "client": [
+    {
+      "services": {
+        "appinvite_service": {
+          "status": 1
+        }, 
+        "analytics_service": {
+          "status": 0
+        }
+      }, 
+      "oauth_client": [
+        {
+          "client_id": "28504515613-40mtcrec9r9mi8ng2etd2kgjo39pg7m4.apps.googleusercontent.com"
+        }
+      ], 
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI7SJ2CJV2xaBgnDbcKYQMfREtwrBdbGI"
+        }
+      ], 
+      "client_info": {
+        "mobilesdk_app_id": "1:28504515613:ios:71c896bb7d644dfc", 
+        "android_client_info": {
+          "package_name": "its.showcase.arapp"
+        }
+      }
+    }
+  ], 
+  "configuration_version": "1", 
+  "project_info": {
+    "storage_bucket": "ar-tl-umich-project.appspot.com", 
+    "project_id": "ar-tl-umich-project", 
+    "firebase_url": "https://ar-tl-umich-project.firebaseio.com", 
+    "project_number": "28504515613"
+  }
+}

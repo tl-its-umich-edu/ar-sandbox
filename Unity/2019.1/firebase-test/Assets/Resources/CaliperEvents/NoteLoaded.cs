@@ -62,8 +62,6 @@ public class NoteLoaded : MonoBehaviour
         json = json.Replace("\"context\"", "\"@context\""); // add @ to content
         json = json.Replace("\"_object\"", "\"object\""); // remove underscore from object
 
-        Debug.Log(">>>>> Content: " + json);
-
         return json;
     }
 }

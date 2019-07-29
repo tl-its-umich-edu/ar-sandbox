@@ -19,6 +19,8 @@ public class CaliperEventHandler : MonoBehaviour
 	private NoteLoaded noteLoaded;
 	private ImageIdentified imageIdentified;
 
+    private bool showDebug = false;
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -30,7 +32,11 @@ public class CaliperEventHandler : MonoBehaviour
 		noteSaved = (NoteSaved)gameObject.AddComponent(typeof(NoteSaved));
 		noteLoaded = (NoteLoaded)gameObject.AddComponent(typeof(NoteLoaded));
 		imageIdentified = (ImageIdentified)gameObject.AddComponent(typeof(ImageIdentified));
-	}
+
+        // send caliper event signalling beginning of session
+
+        SessionLoggedIn();
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -82,7 +88,11 @@ public class CaliperEventHandler : MonoBehaviour
 
 	private async System.Threading.Tasks.Task PushCaliperEventAsync(string json, string pushURL, TextAsset bearerTokenFile)
 	{
-		Debug.Log(">>>>> Destination: " + pushURL);
+        if (showDebug)
+        {
+            Debug.Log(">>>>> Content: " + json);
+            Debug.Log(">>>>> Destination: " + pushURL);
+        }
 
 		var content = new StringContent(json, Encoding.UTF8, "application/json"); // middleman converting string to HTTPContent
 
@@ -91,18 +101,21 @@ public class CaliperEventHandler : MonoBehaviour
 		if (bearerTokenFile != null)
 		{
 			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerTokenFile.text); // add bearer token header
-			Debug.Log(">>>>> Bearer Token Loaded");
+			if (showDebug) Debug.Log(">>>>> Bearer Token Loaded");
 		}
 		else
 		{
-			Debug.Log(">>>>> No Bearer Token Path");
+            if (showDebug) Debug.Log(">>>>> No Bearer Token Path");
 		}
 
 		var response = await client.PostAsync(pushURL, content);
 
 		var responseString = await response.Content.ReadAsStringAsync();
 
-		Debug.Log(">>>>> Status: " + response.StatusCode);
-		Debug.Log(">>>>> Response: " + responseString);
+        if (showDebug)
+        {
+            Debug.Log(">>>>> Status: " + response.StatusCode);
+            Debug.Log(">>>>> Response: " + responseString);
+        }
 	}
 }

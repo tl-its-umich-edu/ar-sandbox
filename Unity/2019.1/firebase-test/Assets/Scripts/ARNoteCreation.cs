@@ -2,28 +2,33 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ARNoteCreation : MonoBehaviour
 {
-    public Button placeButton;
-    public TMP_InputField noteTextField;
+    public Button placeButton, resetButton;
+    public TMP_InputField noteTextField, noteAuthorField;
+    public TMP_Text posterIndicatorText;
     public GameObject placementIndicator, notePrefab;
 
-    private float lerpSpeed = .5f;
+    private float lerpSpeed = .3f;
 
     private SurfaceDetection surfaceDetection;
     private CaliperEventHandler caliperEventHandler;
+    private FirebaseHandler firebaseHandler;
+
+    private GameObject anchorObject = null;
 
     // Start is called before the first frame update
     void Start()
     {
         surfaceDetection = GetComponent<SurfaceDetection>();
         caliperEventHandler = GetComponent<CaliperEventHandler>();
+        firebaseHandler = GetComponent<FirebaseHandler>();
 
-        placeButton.onClick.AddListener(placeButtonEvent);
-
-        caliperEventHandler.SessionLoggedIn();
+        placeButton.onClick.AddListener(PlaceButtonEvent);
+        resetButton.onClick.AddListener(ReloadScene);
     }
 
     // Update is called once per frame
@@ -33,15 +38,15 @@ public class ARNoteCreation : MonoBehaviour
         UpdatePlacementPose();
     }
 
-    private void placeButtonEvent() // place note object
+    private void PlaceButtonEvent() // place note object
     {
-        PlaceNote(noteTextField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
+        PlaceNote(noteTextField.text, noteAuthorField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
         noteTextField.text = "";
     }
 
     private void UpdateButtons()
     {
-        if (surfaceDetection.GetPlacementPoseIsValid() && noteTextField.text != "")
+        if (surfaceDetection.GetPlacementPoseIsValid() && noteTextField.text != "" && anchorObject != null)
         {
             placeButton.interactable = true;
         }
@@ -66,9 +71,60 @@ public class ARNoteCreation : MonoBehaviour
         }
     }
 
-    private void PlaceNote(string noteText, Vector3 position, Quaternion rotation)
+    private void PlaceNote(string noteText, string authorText, Vector3 position, Quaternion rotation, bool sendToFirebase = true)
     {
+        // create note object
+
         GameObject newNote = Instantiate(notePrefab, position, rotation) as GameObject;
-        newNote.GetComponentInChildren<TMP_Text>().text = noteText;
+        newNote.transform.parent = anchorObject.transform;
+
+        // set text of note
+
+        TMP_Text[] newNoteText = newNote.GetComponentsInChildren<TMP_Text>();
+        newNoteText[0].text = noteText;
+        newNoteText[1].text = "- " + authorText;
+
+        // send note data to firebase
+
+        if (sendToFirebase)
+        {
+            FeedbackData fd = new FeedbackData(
+                noteText,
+                authorText,
+                newNote.transform.position - anchorObject.transform.position,
+                newNote.transform.rotation * Quaternion.Inverse(anchorObject.transform.rotation));
+
+            firebaseHandler.AddFeedback(anchorObject.name, fd);
+        }
+    }
+
+    private void ReloadScene()
+	{
+        // doesn't work... why?? D:
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SetAnchorObject(GameObject anchorObject)
+    {
+        if (this.anchorObject == null)
+        {
+            this.anchorObject = anchorObject;
+
+            posterIndicatorText.text = "Currently viewing: " + anchorObject.name;
+
+            Debug.Log(">>>>> Anchor Object: " + anchorObject.name);
+        }
+    }
+
+    public async void LoadExistingFeedbackAsync()
+    {
+        List<FeedbackData> existingFeedback = await firebaseHandler.GetFeedbackData(anchorObject.name);
+
+        Debug.Log(existingFeedback.Count);
+
+        foreach (var x in existingFeedback)
+        {
+            PlaceNote(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
+        }
     }
 }
