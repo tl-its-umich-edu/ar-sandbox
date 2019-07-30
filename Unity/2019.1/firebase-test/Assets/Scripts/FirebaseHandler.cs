@@ -84,6 +84,8 @@ public class FirebaseHandler : MonoBehaviour
             if (task.IsFaulted)
             {
                 // Handle the error...
+
+                Debug.Log(">>>>> Could not get firebase data.");
             }
             else if (task.IsCompleted)
             {
@@ -121,8 +123,6 @@ public class FirebaseHandler : MonoBehaviour
                         feedbackData.rotation.z = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/z").Value.ToString());
 
                         retrievedFeedback.Add(feedbackData);
-
-                        Debug.Log(feedbackData.text);
                     }
                 }
             }

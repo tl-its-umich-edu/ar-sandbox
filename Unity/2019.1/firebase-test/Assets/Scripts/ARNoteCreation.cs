@@ -120,8 +120,6 @@ public class ARNoteCreation : MonoBehaviour
     {
         List<FeedbackData> existingFeedback = await firebaseHandler.GetFeedbackData(anchorObject.name);
 
-        Debug.Log(existingFeedback.Count);
-
         foreach (var x in existingFeedback)
         {
             PlaceNote(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
