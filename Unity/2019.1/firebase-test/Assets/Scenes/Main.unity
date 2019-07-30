@@ -1090,6 +1090,10 @@ MonoBehaviour:
     type: 3}
   exorgPrefab: {fileID: 2927647664084902885, guid: 8f91fd53e419c404fb4e02391c8a9fbe,
     type: 3}
+  arPrefab: {fileID: 2927647664084902885, guid: d9aec3d45a14b4479a496d8c0bb53fb2,
+    type: 3}
+  seleniumPrefab: {fileID: 2927647664084902885, guid: 51fc54e0123c74890bdb51aa4d92dd55,
+    type: 3}
 --- !u!114 &575784131
 MonoBehaviour:
   m_ObjectHideFlags: 0

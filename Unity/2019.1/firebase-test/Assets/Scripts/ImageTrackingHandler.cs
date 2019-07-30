@@ -5,7 +5,7 @@ using UnityEngine.XR.ARFoundation;
 
 public class ImageTrackingHandler : MonoBehaviour
 {
-    public GameObject excomPrefab, exorgPrefab;
+    public GameObject excomPrefab, exorgPrefab, arPrefab, seleniumPrefab;
 
     private ARTrackedImageManager trackedImageManager;
 
@@ -60,6 +60,24 @@ public class ImageTrackingHandler : MonoBehaviour
                     exorgObj.name = "exorg";
 
                     arNoteCreation.SetAnchorObject(exorgObj);
+
+                    break;
+
+                case "ar":
+                    GameObject arObj = Instantiate(arPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                    arObj.transform.parent = trackedImage.transform;
+                    arObj.name = "ar";
+
+                    arNoteCreation.SetAnchorObject(arObj);
+
+                    break;
+
+                case "selenium":
+                    GameObject seleniumObj = Instantiate(seleniumPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                    seleniumObj.transform.parent = trackedImage.transform;
+                    seleniumObj.name = "selenium";
+
+                    arNoteCreation.SetAnchorObject(seleniumObj);
 
                     break;
             }

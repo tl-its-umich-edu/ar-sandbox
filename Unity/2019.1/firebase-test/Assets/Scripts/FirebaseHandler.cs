@@ -51,22 +51,22 @@ public class FirebaseHandler : MonoBehaviour
     private void UpdateNoteCount()
     {
         FirebaseDatabase.DefaultInstance
-            .GetReference("Feedback")
-            .GetValueAsync().ContinueWith(task =>
+        .GetReference("Feedback")
+        .GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
             {
-                if (task.IsFaulted)
-                {
-                    // Handle the error...
+                // Handle the error...
 
-                    Debug.Log(">>>>> Could not get firebase data.");
-                }
-                else if (task.IsCompleted)
-                {
-                    // Do something with snapshot...
+                Debug.Log(">>>>> Could not get firebase data.");
+            }
+            else if (task.IsCompleted)
+            {
+                // Do something with snapshot...
 
-                    feedbackCount = task.Result.ChildrenCount;
-                }
-            });
+                feedbackCount = task.Result.ChildrenCount;
+            }
+        });
     }
 
     public async Task<List<FeedbackData>> GetFeedbackData(string posterName)
@@ -78,55 +78,59 @@ public class FirebaseHandler : MonoBehaviour
         // request data from firebase
 
         await FirebaseDatabase.DefaultInstance
-         .GetReference("/")
-         .GetValueAsync().ContinueWith(task =>
-         {
-             if (task.IsFaulted)
-             {
-                 // Handle the error...
-             }
-             else if (task.IsCompleted)
-             {
-                 DataSnapshot snapshot = task.Result;
-                 // Do something with snapshot...
+        .GetReference("/")
+        .GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                // Do something with snapshot...
 
-                 // find note ids that are associated with the poster
+                // find note ids that are associated with the poster
 
-                 foreach (var x in snapshot.Child("Posters/" + posterName).Children)
-                 {
-                     if ((bool)x.Value)
-                     {
-                         feedbackIndexes.Add(int.Parse(x.Key));
-                     }
-                 }
+                foreach (var x in snapshot.Child("Posters/" + posterName).Children)
+                {
+                    if ((bool)x.Value)
+                    {
+                        feedbackIndexes.Add(int.Parse(x.Key));
+                    }
+                }
 
-                 // build a list of feedback data objects
+                // build a list of feedback data objects
 
-                 for (int i = 1; i <= feedbackCount; i++)
-                 {
-                     if (feedbackIndexes.Contains(i))
-                     {
-                         FeedbackData feedbackData = new FeedbackData("", "", Vector3.zero, new Quaternion(0, 0, 0, 0));
+                for (int i = 1; i <= feedbackCount; i++)
+                {
+                    if (feedbackIndexes.Contains(i))
+                    {
+                        FeedbackData feedbackData = new FeedbackData("", "", Vector3.zero, new Quaternion(0, 0, 0, 0));
 
-                         feedbackData.text = snapshot.Child("Feedback/" + i + "/Text").Value.ToString();
-                         feedbackData.author = snapshot.Child("Feedback/" + i + "/Author").Value.ToString();
+                        feedbackData.text = snapshot.Child("Feedback/" + i + "/Text").Value.ToString();
+                        feedbackData.author = snapshot.Child("Feedback/" + i + "/Author").Value.ToString();
 
-                         feedbackData.position.x = float.Parse(snapshot.Child("Feedback/" + i + "/Position/x").Value.ToString());
-                         feedbackData.position.y = float.Parse(snapshot.Child("Feedback/" + i + "/Position/y").Value.ToString());
-                         feedbackData.position.z = float.Parse(snapshot.Child("Feedback/" + i + "/Position/z").Value.ToString());
+                        feedbackData.position.x = float.Parse(snapshot.Child("Feedback/" + i + "/Position/x").Value.ToString());
+                        feedbackData.position.y = float.Parse(snapshot.Child("Feedback/" + i + "/Position/y").Value.ToString());
+                        feedbackData.position.z = float.Parse(snapshot.Child("Feedback/" + i + "/Position/z").Value.ToString());
 
-                         feedbackData.rotation.w = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/w").Value.ToString());
-                         feedbackData.rotation.x = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/x").Value.ToString());
-                         feedbackData.rotation.y = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/y").Value.ToString());
-                         feedbackData.rotation.z = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/z").Value.ToString());
+                        feedbackData.rotation.w = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/w").Value.ToString());
+                        feedbackData.rotation.x = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/x").Value.ToString());
+                        feedbackData.rotation.y = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/y").Value.ToString());
+                        feedbackData.rotation.z = float.Parse(snapshot.Child("Feedback/" + i + "/Rotation/z").Value.ToString());
 
-                         retrievedFeedback.Add(feedbackData);
+                        retrievedFeedback.Add(feedbackData);
 
-                         Debug.Log(feedbackData.text);
-                     }
-                 }
-             }
-         });
+                        Debug.Log(feedbackData.text);
+                    }
+                }
+            }
+        });
+
+        // add listener to detect if more notes are added later on
+
+
 
         return retrievedFeedback;
     }

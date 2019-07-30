@@ -35,3 +35,23 @@ MonoBehaviour:
     m_SpecifySize: 1
     m_Name: exorg
     m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 4653336661480083804
+      m_GuidHigh: 10545568483031779753
+    m_SerializedTextureGuid:
+      m_GuidLow: 14189641762936868016
+      m_GuidHigh: 15483692441353950986
+    m_Size: {x: 0.076, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: ar
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5060139457542365134
+      m_GuidHigh: 12977377477638317483
+    m_SerializedTextureGuid:
+      m_GuidLow: 4903277116087286314
+      m_GuidHigh: 15841579433239388281
+    m_Size: {x: 0.076, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: selenium
+    m_Texture: {fileID: 0}
