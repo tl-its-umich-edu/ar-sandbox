@@ -40,7 +40,10 @@ public class ARNoteCreation : MonoBehaviour
 
     private void PlaceButtonEvent() // place note object
     {
-        PlaceNote(noteTextField.text, noteAuthorField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
+        GameObject createdFeedback = PlaceNote(noteTextField.text, noteAuthorField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
+
+        caliperEventHandler.FeedbackCreated(createdFeedback.GetInstanceID().ToString(), "Feedback object created by user", noteTextField.text, noteAuthorField.text);
+
         noteTextField.text = "";
     }
 
@@ -71,7 +74,7 @@ public class ARNoteCreation : MonoBehaviour
         }
     }
 
-    private void PlaceNote(string noteText, string authorText, Vector3 position, Quaternion rotation, bool sendToFirebase = true)
+    private GameObject PlaceNote(string noteText, string authorText, Vector3 position, Quaternion rotation, bool sendToFirebase = true)
     {
         // create note object
 
@@ -96,11 +99,14 @@ public class ARNoteCreation : MonoBehaviour
 
             firebaseHandler.AddFeedback(anchorObject.name, fd);
         }
+
+        return newNote;
     }
 
     private void ReloadScene()
 	{
         // doesn't work... why?? D:
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -114,6 +120,8 @@ public class ARNoteCreation : MonoBehaviour
 
             Debug.Log(">>>>> Anchor Object: " + anchorObject.name);
         }
+
+        caliperEventHandler.ImageIdentified(anchorObject.name, anchorObject.GetInstanceID().ToString());
     }
 
     public async void LoadExistingFeedbackAsync()

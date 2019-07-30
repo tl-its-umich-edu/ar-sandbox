@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class NoteLoaded : MonoBehaviour
+public class FeedbackCreated : MonoBehaviour
 {
     // Use this for initialization
     void Start()
@@ -17,9 +17,13 @@ public class NoteLoaded : MonoBehaviour
 
     }
 
-    public string CreateEvent(string noteObjectId, string noteObjectDesc, string orientation = "horizontal", string notePlaced = "vertical")
+    public string CreateEvent(
+        string feedbackObjectId,
+        string feedbackObjectDesc,
+        string text,
+        string author)
     {
-        CaliperEventNoteLoaded ce = new CaliperEventNoteLoaded();
+        CaliperEventFeedbackCreated ce = new CaliperEventFeedbackCreated();
         ce.sensor = "sensor";
         ce.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
 
@@ -33,26 +37,32 @@ public class NoteLoaded : MonoBehaviour
             now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "." +
             now.TimeOfDay.Milliseconds.ToString().PadLeft(3, '0') + "Z";
 
-        CaliperEventNoteLoadedData data = new CaliperEventNoteLoadedData();
+        CaliperEventFeedbackCreatedData data = new CaliperEventFeedbackCreatedData();
         data.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
         data.id = "urn:uuid:" + Guid.NewGuid().ToString();
         data.type = "Event";
 
-        CaliperEventNoteLoadedDataActor actor = new CaliperEventNoteLoadedDataActor();
-        actor.id = "urn:umich:artool:notecreator:" + SystemInfo.deviceName;
+        CaliperEventFeedbackCreatedDataActor actor = new CaliperEventFeedbackCreatedDataActor();
+        actor.id = "urn:umich:artool:feedbackcreator:" + SystemInfo.deviceName;
         actor.type = "Person";
 
         data.actor = actor;
-        data.action = "Retrieved";
+        data.action = "Created";
 
-        CaliperEventNoteLoadedDataObject _object = new CaliperEventNoteLoadedDataObject();
-        _object.id = "urn:umich:artool:notecreator:" + noteObjectId;
-        _object.description = noteObjectDesc;
+        CaliperEventFeedbackCreatedDataObject _object = new CaliperEventFeedbackCreatedDataObject();
+        _object.id = "urn:umich:artool:feedbackcreator:" + feedbackObjectId;
+        _object.description = feedbackObjectDesc;
         _object.type = "DigitalResource";
+
+        CaliperEventFeedbackCreatedDataObjectExtensions objectExtensions = new CaliperEventFeedbackCreatedDataObjectExtensions();
+        objectExtensions.text = text;
+        objectExtensions.author = author;
+
+        _object.extensions = objectExtensions;
 
         data._object = _object;
         data.eventTime = ce.sendTime;
-        data.edApp = "note-creator_ar";
+        data.edApp = "feedback-creator_ar";
 
         ce.data.Add(data);
 
@@ -67,38 +77,46 @@ public class NoteLoaded : MonoBehaviour
 }
 
 [Serializable]
-public class CaliperEventNoteLoaded
+public class CaliperEventFeedbackCreated
 {
     public string sensor;
     public string sendTime;
     public string dataVersion;
-    public List<CaliperEventNoteLoadedData> data = new List<CaliperEventNoteLoadedData>();
+    public List<CaliperEventFeedbackCreatedData> data = new List<CaliperEventFeedbackCreatedData>();
 }
 
 [Serializable]
-public class CaliperEventNoteLoadedData
+public class CaliperEventFeedbackCreatedData
 {
     public string context; // needs to begin with @ when converted to json string
     public string id;
     public string type;
-    public CaliperEventNoteLoadedDataActor actor;
+    public CaliperEventFeedbackCreatedDataActor actor;
     public string action;
-    public CaliperEventNoteLoadedDataObject _object; // remove _ when converted to json string
+    public CaliperEventFeedbackCreatedDataObject _object; // remove _ when converted to json string
     public string eventTime;
     public string edApp;
 }
 
 [Serializable]
-public class CaliperEventNoteLoadedDataActor
+public class CaliperEventFeedbackCreatedDataActor
 {
     public string id;
     public string type;
 }
 
 [Serializable]
-public class CaliperEventNoteLoadedDataObject
+public class CaliperEventFeedbackCreatedDataObject
 {
     public string id;
     public string description;
     public string type;
+    public CaliperEventFeedbackCreatedDataObjectExtensions extensions;
+}
+
+[Serializable]
+public class CaliperEventFeedbackCreatedDataObjectExtensions
+{
+    public string text;
+    public string author;
 }

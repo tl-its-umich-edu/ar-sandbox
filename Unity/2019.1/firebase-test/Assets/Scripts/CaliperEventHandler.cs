@@ -13,13 +13,10 @@ public class CaliperEventHandler : MonoBehaviour
 	//private string thisPushURL = "http://lti.tools/caliper/event?key=milk"; // test endpoint
 
 	private SessionLoggedIn sessionLoggedIn;
-	private NoteCreated noteCreated;
-	private NoteDeleted noteDeleted;
-	private NoteSaved noteSaved;
-	private NoteLoaded noteLoaded;
+	private FeedbackCreated feedbackCreated;
 	private ImageIdentified imageIdentified;
 
-    private bool showDebug = false;
+    private bool showDebug = true;
 
 	// Start is called before the first frame update
 	void Start()
@@ -27,10 +24,7 @@ public class CaliperEventHandler : MonoBehaviour
 		// load caliper event templates
 
 		sessionLoggedIn = (SessionLoggedIn)gameObject.AddComponent(typeof(SessionLoggedIn));
-		noteCreated = (NoteCreated)gameObject.AddComponent(typeof(NoteCreated));
-		noteDeleted = (NoteDeleted)gameObject.AddComponent(typeof(NoteDeleted));
-		noteSaved = (NoteSaved)gameObject.AddComponent(typeof(NoteSaved));
-		noteLoaded = (NoteLoaded)gameObject.AddComponent(typeof(NoteLoaded));
+		feedbackCreated = (FeedbackCreated)gameObject.AddComponent(typeof(FeedbackCreated));
 		imageIdentified = (ImageIdentified)gameObject.AddComponent(typeof(ImageIdentified));
 
         // send caliper event signalling beginning of session
@@ -51,30 +45,9 @@ public class CaliperEventHandler : MonoBehaviour
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}
 
-	public async void NoteCreated(string noteObjectId, string noteObjectDesc, string deviceOrientation = "N/A", string noteScale = "1", string noteOrientation = "N/A")
+	public async void FeedbackCreated(string feedbackObjectId, string feedbackObjectDesc, string text, string author)
 	{
-		string json = noteCreated.CreateEvent(noteObjectId, noteObjectDesc, deviceOrientation, noteScale, noteOrientation);
-
-		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
-	}
-
-	public async void NoteDeleted(string noteObjectId, string noteObjectDesc)
-	{
-		string json = noteDeleted.CreateEvent(noteObjectId, noteObjectDesc);
-
-		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
-	}
-
-	public async void NoteSaved(string noteObjectId, string noteObjectDesc)
-	{
-		string json = noteSaved.CreateEvent(noteObjectId, noteObjectDesc);
-
-		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
-	}
-
-	public async void NoteLoaded(string noteObjectId, string noteObjectDesc)
-	{
-		string json = noteLoaded.CreateEvent(noteObjectId, noteObjectDesc);
+		string json = feedbackCreated.CreateEvent(feedbackObjectId, feedbackObjectDesc, text, author);
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}
