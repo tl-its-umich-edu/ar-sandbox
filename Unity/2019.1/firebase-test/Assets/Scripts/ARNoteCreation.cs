@@ -106,9 +106,6 @@ public class ARNoteCreation : MonoBehaviour
 
     private void ResetAnchor()
 	{
-        // kills camera feed in arfoundation 2.2 :(
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
         Destroy(anchorObject);
 
         posterIndicatorText.text = "No QR Code Detected";
@@ -141,5 +138,7 @@ public class ARNoteCreation : MonoBehaviour
         {
             PlaceNote(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
         }
+
+        caliperEventHandler.FeedbackLoaded(anchorObject.GetInstanceID().ToString(), anchorObject.name);
     }
 }

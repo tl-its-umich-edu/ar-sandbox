@@ -2,9 +2,8 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Analytics;
 
-public class SessionLoggedIn : MonoBehaviour
+public class FeedbackLoaded : MonoBehaviour
 {
     // Use this for initialization
     void Start()
@@ -18,9 +17,9 @@ public class SessionLoggedIn : MonoBehaviour
 
     }
 
-    public string CreateEvent()
+    public string CreateEvent(string feedbackObjectId, string feedbackObjectDesc)
     {
-        CaliperEventSessionLoggedIn ce = new CaliperEventSessionLoggedIn();
+        CaliperEventFeedbackLoaded ce = new CaliperEventFeedbackLoaded();
         ce.sensor = "sensor";
         ce.dataVersion = "http://purl.imsglobal.org/ctx/caliper/v1p1";
 
@@ -34,16 +33,16 @@ public class SessionLoggedIn : MonoBehaviour
             now.TimeOfDay.Seconds.ToString().PadLeft(2, '0') + "." +
             now.TimeOfDay.Milliseconds.ToString().PadLeft(3, '0') + "Z";
 
-        CaliperEventSessionLoggedInData data = new CaliperEventSessionLoggedInData();
+        CaliperEventFeedbackLoadedData data = new CaliperEventFeedbackLoadedData();
         data.context = "http://purl.imsglobal.org/ctx/caliper/v1p1";
         data.id = "urn:uuid:" + Guid.NewGuid().ToString();
-        data.type = "SessionEvent";
+        data.type = "Event";
 
-        CaliperEventSessionLoggedInDataActor actor = new CaliperEventSessionLoggedInDataActor();
+        CaliperEventFeedbackLoadedDataActor actor = new CaliperEventFeedbackLoadedDataActor();
         actor.id = "urn:umich:artool:feedbackcreator:unauthenticated";
         actor.type = "Person";
 
-        CaliperEventSessionLoggedInDataActorExtensions actorExtensions = new CaliperEventSessionLoggedInDataActorExtensions();
+        CaliperEventFeedbackLoadedDataActorExtensions actorExtensions = new CaliperEventFeedbackLoadedDataActorExtensions();
         actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
         actorExtensions.deviceName = SystemInfo.deviceName;
         actorExtensions.deviceModel = SystemInfo.deviceModel;
@@ -52,21 +51,16 @@ public class SessionLoggedIn : MonoBehaviour
         actor.actorExtensions = actorExtensions;
 
         data.actor = actor;
-        data.action = "LoggedIn";
+        data.action = "Retrieved";
 
-        CaliperEventSessionLoggedInDataObject _object = new CaliperEventSessionLoggedInDataObject();
-        _object.id = "urn:umich:artool:feedbackcreator";
-        _object.type = "SoftwareApplication";
+        CaliperEventFeedbackLoadedDataObject _object = new CaliperEventFeedbackLoadedDataObject();
+        _object.id = "urn:umich:artool:feedbackcreator:" + feedbackObjectId;
+        _object.description = feedbackObjectDesc;
+        _object.type = "DigitalResource";
 
         data._object = _object;
         data.eventTime = ce.sendTime;
         data.edApp = "feedback-creator_ar";
-
-        CaliperEventSessionLoggedInDataSession session = new CaliperEventSessionLoggedInDataSession();
-        session.id = "urn:umich:artool:feedbackcreator:" + AnalyticsSessionInfo.sessionId;
-        session.type = "Session";
-
-        data.session = session;
 
         ce.data.Add(data);
 
@@ -81,39 +75,37 @@ public class SessionLoggedIn : MonoBehaviour
 }
 
 [Serializable]
-public class CaliperEventSessionLoggedIn
+public class CaliperEventFeedbackLoaded
 {
     public string sensor;
     public string sendTime;
     public string dataVersion;
-    public List<CaliperEventSessionLoggedInData> data = new List<CaliperEventSessionLoggedInData>();
+    public List<CaliperEventFeedbackLoadedData> data = new List<CaliperEventFeedbackLoadedData>();
 }
 
 [Serializable]
-public class CaliperEventSessionLoggedInData
+public class CaliperEventFeedbackLoadedData
 {
     public string context; // needs to begin with @ when converted to json string
     public string id;
     public string type;
-    public CaliperEventSessionLoggedInDataActor actor;
-    public CaliperEventFeedbackCreatedDataObjectExtensions actorExtensions;
+    public CaliperEventFeedbackLoadedDataActor actor;
     public string action;
-    public CaliperEventSessionLoggedInDataObject _object; // remove _ when converted to json string
+    public CaliperEventFeedbackLoadedDataObject _object; // remove _ when converted to json string
     public string eventTime;
     public string edApp;
-    public CaliperEventSessionLoggedInDataSession session;
 }
 
 [Serializable]
-public class CaliperEventSessionLoggedInDataActor
+public class CaliperEventFeedbackLoadedDataActor
 {
     public string id;
     public string type;
-    public CaliperEventSessionLoggedInDataActorExtensions actorExtensions;
+    public CaliperEventFeedbackLoadedDataActorExtensions actorExtensions;
 }
 
 [Serializable]
-public class CaliperEventSessionLoggedInDataActorExtensions
+public class CaliperEventFeedbackLoadedDataActorExtensions
 {
     public string deviceId;
     public string deviceName;
@@ -122,15 +114,9 @@ public class CaliperEventSessionLoggedInDataActorExtensions
 }
 
 [Serializable]
-public class CaliperEventSessionLoggedInDataObject
+public class CaliperEventFeedbackLoadedDataObject
 {
     public string id;
-    public string type;
-}
-
-[Serializable]
-public class CaliperEventSessionLoggedInDataSession
-{
-    public string id;
+    public string description;
     public string type;
 }

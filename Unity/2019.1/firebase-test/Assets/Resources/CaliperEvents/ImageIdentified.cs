@@ -39,20 +39,28 @@ public class ImageIdentified : MonoBehaviour
         data.type = "Event";
 
         CaliperEventImageIdentifiedDataActor actor = new CaliperEventImageIdentifiedDataActor();
-        actor.id = "urn:umich:artool:notecreator";
+        actor.id = "urn:umich:artool:feedbackcreator";
         actor.type = "SoftwareApplication";
+
+        CaliperEventImageIdentifiedDataActorExtensions actorExtensions = new CaliperEventImageIdentifiedDataActorExtensions();
+        actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
+        actorExtensions.deviceName = SystemInfo.deviceName;
+        actorExtensions.deviceModel = SystemInfo.deviceModel;
+        actorExtensions.deviceType = SystemInfo.deviceType.ToString();
+
+        actor.actorExtensions = actorExtensions;
 
         data.actor = actor;
         data.action = "Identified";
 
         CaliperEventImageIdentifiedDataObject _object = new CaliperEventImageIdentifiedDataObject();
-        _object.id = "urn:umich:artool:notecreator:" + imageId;
+        _object.id = "urn:umich:artool:feedbackcreator:" + imageId;
         _object.description = imageName;
         _object.type = "DigitalResource";
 
         data._object = _object;
         data.eventTime = ce.sendTime;
-        data.edApp = "note-creator_ar";
+        data.edApp = "feedback-creator_ar";
 
         ce.data.Add(data);
 
@@ -93,6 +101,16 @@ public class CaliperEventImageIdentifiedDataActor
 {
     public string id;
     public string type;
+    public CaliperEventImageIdentifiedDataActorExtensions actorExtensions;
+}
+
+[Serializable]
+public class CaliperEventImageIdentifiedDataActorExtensions
+{
+    public string deviceId;
+    public string deviceName;
+    public string deviceModel;
+    public string deviceType;
 }
 
 [Serializable]

@@ -43,10 +43,18 @@ public class FeedbackCreated : MonoBehaviour
         data.type = "Event";
 
         CaliperEventFeedbackCreatedDataActor actor = new CaliperEventFeedbackCreatedDataActor();
-        actor.id = "urn:umich:artool:feedbackcreator:" + SystemInfo.deviceName;
+        actor.id = "urn:umich:artool:feedbackcreator:unauthenticated";
         actor.type = "Person";
 
-        data.actor = actor;
+        CaliperEventFeedbackCreatedDataActorExtensions actorExtensions = new CaliperEventFeedbackCreatedDataActorExtensions();
+		actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
+		actorExtensions.deviceName = SystemInfo.deviceName;
+		actorExtensions.deviceModel = SystemInfo.deviceModel;
+		actorExtensions.deviceType = SystemInfo.deviceType.ToString();
+
+		actor.actorExtensions = actorExtensions;
+
+		data.actor = actor;
         data.action = "Created";
 
         CaliperEventFeedbackCreatedDataObject _object = new CaliperEventFeedbackCreatedDataObject();
@@ -103,6 +111,16 @@ public class CaliperEventFeedbackCreatedDataActor
 {
     public string id;
     public string type;
+	public CaliperEventFeedbackCreatedDataActorExtensions actorExtensions;
+}
+
+[Serializable]
+public class CaliperEventFeedbackCreatedDataActorExtensions
+{
+	public string deviceId;
+	public string deviceName;
+	public string deviceModel;
+	public string deviceType;
 }
 
 [Serializable]

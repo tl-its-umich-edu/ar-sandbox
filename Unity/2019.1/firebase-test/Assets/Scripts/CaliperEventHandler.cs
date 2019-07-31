@@ -15,6 +15,7 @@ public class CaliperEventHandler : MonoBehaviour
 	private SessionLoggedIn sessionLoggedIn;
 	private FeedbackCreated feedbackCreated;
 	private ImageIdentified imageIdentified;
+    private FeedbackLoaded feedbackLoaded;
 
     private bool showDebug = true;
 
@@ -26,6 +27,7 @@ public class CaliperEventHandler : MonoBehaviour
 		sessionLoggedIn = (SessionLoggedIn)gameObject.AddComponent(typeof(SessionLoggedIn));
 		feedbackCreated = (FeedbackCreated)gameObject.AddComponent(typeof(FeedbackCreated));
 		imageIdentified = (ImageIdentified)gameObject.AddComponent(typeof(ImageIdentified));
+        feedbackLoaded = (FeedbackLoaded)gameObject.AddComponent(typeof(FeedbackLoaded));
 
         // send caliper event signalling beginning of session
 
@@ -50,16 +52,23 @@ public class CaliperEventHandler : MonoBehaviour
 		string json = feedbackCreated.CreateEvent(feedbackObjectId, feedbackObjectDesc, text, author);
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
-	}
+    }
 
-	public async void ImageIdentified(string imageName, string imageId)
+    public async void ImageIdentified(string imageName, string imageId)
+    {
+        string json = imageIdentified.CreateEvent(imageName, imageId);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
+
+	public async void FeedbackLoaded(string objectId, string objectDescription)
 	{
-		string json = imageIdentified.CreateEvent(imageName, imageId);
+		string json = feedbackLoaded.CreateEvent(objectId, objectDescription);
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}
 
-	private async System.Threading.Tasks.Task PushCaliperEventAsync(string json, string pushURL, TextAsset bearerTokenFile)
+    private async System.Threading.Tasks.Task PushCaliperEventAsync(string json, string pushURL, TextAsset bearerTokenFile)
 	{
         if (showDebug)
         {
