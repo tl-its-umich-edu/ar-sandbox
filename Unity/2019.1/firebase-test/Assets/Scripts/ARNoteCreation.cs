@@ -28,7 +28,7 @@ public class ARNoteCreation : MonoBehaviour
         firebaseHandler = GetComponent<FirebaseHandler>();
 
         placeButton.onClick.AddListener(PlaceButtonEvent);
-        resetButton.onClick.AddListener(ReloadScene);
+        resetButton.onClick.AddListener(ResetAnchor);
     }
 
     // Update is called once per frame
@@ -80,6 +80,7 @@ public class ARNoteCreation : MonoBehaviour
 
         GameObject newNote = Instantiate(notePrefab, position, rotation) as GameObject;
         newNote.transform.parent = anchorObject.transform;
+        newNote.name = "note";
 
         // set text of note
 
@@ -103,11 +104,14 @@ public class ARNoteCreation : MonoBehaviour
         return newNote;
     }
 
-    private void ReloadScene()
+    private void ResetAnchor()
 	{
-        // doesn't work... why?? D:
+        // kills camera feed in arfoundation 2.2 :(
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        Destroy(anchorObject);
+
+        posterIndicatorText.text = "No QR Code Detected";
     }
 
     public void SetAnchorObject(GameObject anchorObject)
@@ -122,6 +126,11 @@ public class ARNoteCreation : MonoBehaviour
         }
 
         caliperEventHandler.ImageIdentified(anchorObject.name, anchorObject.GetInstanceID().ToString());
+    }
+
+    public GameObject GetAnchorObject()
+    {
+        return anchorObject;
     }
 
     public async void LoadExistingFeedbackAsync()

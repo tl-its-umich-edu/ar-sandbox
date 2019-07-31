@@ -28,6 +28,11 @@ public class SurfaceDetection : MonoBehaviour
         // send raycast from center of screen to detected surfaces
 
         var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+
+        // adjust height to fit visible area (add feedback panel height and touch keyboard height to screenCenter Y)
+        var feedbackPanelHeight = GameObject.Find("FeedbackPanel").GetComponent<RectTransform>().sizeDelta.y;
+        screenCenter.y += feedbackPanelHeight / 2 + TouchScreenKeyboard.area.height / 2;
+
         var hits = new List<ARRaycastHit>();
         arRaycastManager.Raycast(screenCenter, hits, (UnityEngine.XR.ARSubsystems.TrackableType)TrackableType.PlaneWithinBounds);
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 public class ImageTrackingHandler : MonoBehaviour
 {
@@ -42,59 +43,62 @@ public class ImageTrackingHandler : MonoBehaviour
     {
         foreach (var trackedImage in eventArgs.added)
         {
-            switch (trackedImage.referenceImage.name)
-            {
-                case "excom":
-                    GameObject excomObj = Instantiate(excomPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                    excomObj.transform.parent = trackedImage.transform;
-                    excomObj.name = "excom";
-
-                    arNoteCreation.SetAnchorObject(excomObj);
-
-                    break;
-
-
-                case "exorg":
-                    GameObject exorgObj = Instantiate(exorgPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                    exorgObj.transform.parent = trackedImage.transform;
-                    exorgObj.name = "exorg";
-
-                    arNoteCreation.SetAnchorObject(exorgObj);
-
-                    break;
-
-                case "ar":
-                    GameObject arObj = Instantiate(arPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                    arObj.transform.parent = trackedImage.transform;
-                    arObj.name = "ar";
-
-                    arNoteCreation.SetAnchorObject(arObj);
-
-                    break;
-
-                case "selenium":
-                    GameObject seleniumObj = Instantiate(seleniumPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                    seleniumObj.transform.parent = trackedImage.transform;
-                    seleniumObj.name = "selenium";
-
-                    arNoteCreation.SetAnchorObject(seleniumObj);
-
-                    break;
-            }
-
-            Debug.Log(">>>>> Image found: " + trackedImage.referenceImage.name);
-
-            arNoteCreation.LoadExistingFeedbackAsync();
+            
         }
 
         foreach (var trackedImage in eventArgs.updated)
         {
+            if (arNoteCreation.GetAnchorObject() == null && trackedImage.trackingState == TrackingState.Tracking)
+            {
+                switch (trackedImage.referenceImage.name)
+                {
+                    case "excom":
+                        GameObject excomObj = Instantiate(excomPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        excomObj.transform.parent = trackedImage.transform;
+                        excomObj.name = "excom";
 
+                        arNoteCreation.SetAnchorObject(excomObj);
+
+                        break;
+
+
+                    case "exorg":
+                        GameObject exorgObj = Instantiate(exorgPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        exorgObj.transform.parent = trackedImage.transform;
+                        exorgObj.name = "exorg";
+
+                        arNoteCreation.SetAnchorObject(exorgObj);
+
+                        break;
+
+                    case "ar":
+                        GameObject arObj = Instantiate(arPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        arObj.transform.parent = trackedImage.transform;
+                        arObj.name = "ar";
+
+                        arNoteCreation.SetAnchorObject(arObj);
+
+                        break;
+
+                    case "selenium":
+                        GameObject seleniumObj = Instantiate(seleniumPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        seleniumObj.transform.parent = trackedImage.transform;
+                        seleniumObj.name = "selenium";
+
+                        arNoteCreation.SetAnchorObject(seleniumObj);
+
+                        break;
+                }
+
+                Debug.Log(">>>>> Image found: " + trackedImage.referenceImage.name);
+
+                arNoteCreation.LoadExistingFeedbackAsync();
+            }
         }
 
         foreach (var trackedImage in eventArgs.removed)
         {
-
+            
         }
     }
 }
