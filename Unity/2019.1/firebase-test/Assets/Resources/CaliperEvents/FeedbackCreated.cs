@@ -18,6 +18,7 @@ public class FeedbackCreated : MonoBehaviour
     }
 
     public string CreateEvent(
+        string posterName,
         string feedbackObjectId,
         string feedbackObjectDesc,
         string text,
@@ -47,12 +48,13 @@ public class FeedbackCreated : MonoBehaviour
         actor.type = "Person";
 
         CaliperEventFeedbackCreatedDataActorExtensions actorExtensions = new CaliperEventFeedbackCreatedDataActorExtensions();
+        actorExtensions.posterName = posterName;
 		actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
 		actorExtensions.deviceName = SystemInfo.deviceName;
 		actorExtensions.deviceModel = SystemInfo.deviceModel;
 		actorExtensions.deviceType = SystemInfo.deviceType.ToString();
 
-		actor.actorExtensions = actorExtensions;
+		actor.extensions = actorExtensions;
 
 		data.actor = actor;
         data.action = "Created";
@@ -111,12 +113,13 @@ public class CaliperEventFeedbackCreatedDataActor
 {
     public string id;
     public string type;
-	public CaliperEventFeedbackCreatedDataActorExtensions actorExtensions;
+	public CaliperEventFeedbackCreatedDataActorExtensions extensions;
 }
 
 [Serializable]
 public class CaliperEventFeedbackCreatedDataActorExtensions
 {
+    public string posterName;
 	public string deviceId;
 	public string deviceName;
 	public string deviceModel;

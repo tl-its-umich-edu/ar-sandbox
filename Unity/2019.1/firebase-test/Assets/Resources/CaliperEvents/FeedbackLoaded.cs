@@ -17,7 +17,7 @@ public class FeedbackLoaded : MonoBehaviour
 
     }
 
-    public string CreateEvent(string feedbackObjectId, string feedbackObjectDesc)
+    public string CreateEvent(int feedbackRetrievedCount, string feedbackObjectName, string feedbackObjectId, string feedbackObjectDesc)
     {
         CaliperEventFeedbackLoaded ce = new CaliperEventFeedbackLoaded();
         ce.sensor = "sensor";
@@ -43,18 +43,20 @@ public class FeedbackLoaded : MonoBehaviour
         actor.type = "Person";
 
         CaliperEventFeedbackLoadedDataActorExtensions actorExtensions = new CaliperEventFeedbackLoadedDataActorExtensions();
+        actorExtensions.feedbackRetrievedCount = feedbackRetrievedCount;
         actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
         actorExtensions.deviceName = SystemInfo.deviceName;
         actorExtensions.deviceModel = SystemInfo.deviceModel;
         actorExtensions.deviceType = SystemInfo.deviceType.ToString();
 
-        actor.actorExtensions = actorExtensions;
+        actor.extensions = actorExtensions;
 
         data.actor = actor;
         data.action = "Retrieved";
 
         CaliperEventFeedbackLoadedDataObject _object = new CaliperEventFeedbackLoadedDataObject();
         _object.id = "urn:umich:artool:feedbackcreator:" + feedbackObjectId;
+        _object.name = feedbackObjectName;
         _object.description = feedbackObjectDesc;
         _object.type = "DigitalResource";
 
@@ -101,12 +103,13 @@ public class CaliperEventFeedbackLoadedDataActor
 {
     public string id;
     public string type;
-    public CaliperEventFeedbackLoadedDataActorExtensions actorExtensions;
+    public CaliperEventFeedbackLoadedDataActorExtensions extensions;
 }
 
 [Serializable]
 public class CaliperEventFeedbackLoadedDataActorExtensions
 {
+    public int feedbackRetrievedCount;
     public string deviceId;
     public string deviceName;
     public string deviceModel;
@@ -116,6 +119,7 @@ public class CaliperEventFeedbackLoadedDataActorExtensions
 [Serializable]
 public class CaliperEventFeedbackLoadedDataObject
 {
+    public string name;
     public string id;
     public string description;
     public string type;

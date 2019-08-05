@@ -49,7 +49,7 @@ public class SessionLoggedIn : MonoBehaviour
         actorExtensions.deviceModel = SystemInfo.deviceModel;
         actorExtensions.deviceType = SystemInfo.deviceType.ToString();
 
-        actor.actorExtensions = actorExtensions;
+        actor.extensions = actorExtensions;
 
         data.actor = actor;
         data.action = "LoggedIn";
@@ -96,7 +96,6 @@ public class CaliperEventSessionLoggedInData
     public string id;
     public string type;
     public CaliperEventSessionLoggedInDataActor actor;
-    public CaliperEventFeedbackCreatedDataObjectExtensions actorExtensions;
     public string action;
     public CaliperEventSessionLoggedInDataObject _object; // remove _ when converted to json string
     public string eventTime;
@@ -109,7 +108,7 @@ public class CaliperEventSessionLoggedInDataActor
 {
     public string id;
     public string type;
-    public CaliperEventSessionLoggedInDataActorExtensions actorExtensions;
+    public CaliperEventSessionLoggedInDataActorExtensions extensions;
 }
 
 [Serializable]

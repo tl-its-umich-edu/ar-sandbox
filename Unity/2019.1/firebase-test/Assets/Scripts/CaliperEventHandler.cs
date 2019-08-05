@@ -47,23 +47,23 @@ public class CaliperEventHandler : MonoBehaviour
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}
 
-	public async void FeedbackCreated(string feedbackObjectId, string feedbackObjectDesc, string text, string author)
+	public async void FeedbackCreated(string posterName, string feedbackObjectId, string feedbackObjectDesc, string text, string author)
 	{
-		string json = feedbackCreated.CreateEvent(feedbackObjectId, feedbackObjectDesc, text, author);
+		string json = feedbackCreated.CreateEvent(posterName, feedbackObjectId, feedbackObjectDesc, text, author);
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
     }
 
-    public async void ImageIdentified(string imageName, string imageId)
+    public async void ImageIdentified(string imageName, string imageId, string imageDescription)
     {
-        string json = imageIdentified.CreateEvent(imageName, imageId);
+        string json = imageIdentified.CreateEvent(imageName, imageId, imageDescription);
 
         await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
     }
 
-	public async void FeedbackLoaded(string objectId, string objectDescription)
+	public async void FeedbackLoaded(int feedbackRetrievedCount, string objectName, string objectId, string objectDescription)
 	{
-		string json = feedbackLoaded.CreateEvent(objectId, objectDescription);
+		string json = feedbackLoaded.CreateEvent(feedbackRetrievedCount, objectName, objectId, objectDescription);
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}

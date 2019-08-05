@@ -5,6 +5,7 @@ using Firebase;
 using Firebase.Unity.Editor;
 using Firebase.Database;
 using System.Threading.Tasks;
+using System;
 
 public class FirebaseHandler : MonoBehaviour
 {
@@ -20,7 +21,10 @@ public class FirebaseHandler : MonoBehaviour
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl(dbURL);
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
-        UpdateNoteCount();
+        // listen for changes to feedback branch (this is called when initialized and when changes happen)
+        FirebaseDatabase.DefaultInstance.GetReference("Feedback").ValueChanged += HandleValueChanged;
+
+        // dbRef.Child("test").SetRawJsonValueAsync("{\"Test\":\"asdf\",\"john\":{null,\"doe\",\"smith\"}}"); nested data doesnt work for some reason
     }
 
     // Update is called once per frame
@@ -31,28 +35,28 @@ public class FirebaseHandler : MonoBehaviour
 
     public void AddFeedback(string posterName, FeedbackData fd)
     {
-        feedbackCount++;
+        var feedbackIndex = (feedbackCount + 1).ToString();
 
-        dbRef.Child("Posters").Child(posterName).Child(feedbackCount.ToString()).SetValueAsync(true);
+        // todo: minimize calls to firebase to reduce triggers to listener events
 
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Text").SetValueAsync(fd.text);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Author").SetValueAsync(fd.author);
+        dbRef.Child("Posters").Child(posterName).Child(feedbackIndex).SetValueAsync(true);
 
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Position").Child("x").SetValueAsync(fd.position.x);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Position").Child("y").SetValueAsync(fd.position.y);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Position").Child("z").SetValueAsync(fd.position.z);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Text").SetValueAsync(fd.text);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Author").SetValueAsync(fd.author);
 
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Rotation").Child("w").SetValueAsync(fd.rotation.w);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Rotation").Child("x").SetValueAsync(fd.rotation.x);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Rotation").Child("y").SetValueAsync(fd.rotation.y);
-        dbRef.Child("Feedback").Child(feedbackCount.ToString()).Child("Rotation").Child("z").SetValueAsync(fd.rotation.z);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Position").Child("x").SetValueAsync(fd.position.x);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Position").Child("y").SetValueAsync(fd.position.y);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Position").Child("z").SetValueAsync(fd.position.z);
+
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Rotation").Child("w").SetValueAsync(fd.rotation.w);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Rotation").Child("x").SetValueAsync(fd.rotation.x);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Rotation").Child("y").SetValueAsync(fd.rotation.y);
+        dbRef.Child("Feedback").Child(feedbackIndex).Child("Rotation").Child("z").SetValueAsync(fd.rotation.z);
     }
 
     private void UpdateNoteCount()
     {
-        FirebaseDatabase.DefaultInstance
-        .GetReference("Feedback")
-        .GetValueAsync().ContinueWith(task =>
+        FirebaseDatabase.DefaultInstance.GetReference("Feedback").GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -77,9 +81,7 @@ public class FirebaseHandler : MonoBehaviour
 
         // request data from firebase
 
-        await FirebaseDatabase.DefaultInstance
-        .GetReference("/")
-        .GetValueAsync().ContinueWith(task =>
+        await FirebaseDatabase.DefaultInstance.GetReference("/").GetValueAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
             {
@@ -96,6 +98,7 @@ public class FirebaseHandler : MonoBehaviour
 
                 foreach (var x in snapshot.Child("Posters/" + posterName).Children)
                 {
+                    // don't load note if index set to false
                     if ((bool)x.Value)
                     {
                         feedbackIndexes.Add(int.Parse(x.Key));
@@ -128,12 +131,26 @@ public class FirebaseHandler : MonoBehaviour
             }
         });
 
-        // add listener to detect if more notes are added later on
-
-
-
         return retrievedFeedback;
     }
+
+    void HandleValueChanged(object sender, ValueChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError.Message);
+            return;
+        }
+        // Do something with the data in args.Snapshot
+
+        // update feedback count
+
+        feedbackCount = args.Snapshot.ChildrenCount;
+
+        Debug.Log(feedbackCount);
+    }
+
+
 }
 
 public class FeedbackData

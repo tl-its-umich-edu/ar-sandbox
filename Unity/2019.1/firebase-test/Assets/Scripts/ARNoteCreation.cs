@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ARNoteCreation : MonoBehaviour
 {
     public Button placeButton, resetButton;
-    public TMP_InputField noteTextField, noteAuthorField;
+    public TMP_InputField feedbackTextField, feedbackAuthorField;
     public TMP_Text posterIndicatorText;
     public GameObject placementIndicator, notePrefab;
 
@@ -40,16 +40,16 @@ public class ARNoteCreation : MonoBehaviour
 
     private void PlaceButtonEvent() // place note object
     {
-        GameObject createdFeedback = PlaceNote(noteTextField.text, noteAuthorField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
+        GameObject createdFeedback = PlaceFeedback(feedbackTextField.text, feedbackAuthorField.text, placementIndicator.transform.position, placementIndicator.transform.rotation);
 
-        caliperEventHandler.FeedbackCreated(createdFeedback.GetInstanceID().ToString(), "Feedback object created by user", noteTextField.text, noteAuthorField.text);
+        caliperEventHandler.FeedbackCreated(anchorObject.name, createdFeedback.GetInstanceID().ToString(), "Feedback object created by user", feedbackTextField.text, feedbackAuthorField.text);
 
-        noteTextField.text = "";
+        feedbackTextField.text = "";
     }
 
     private void UpdateButtons()
     {
-        if (surfaceDetection.GetPlacementPoseIsValid() && noteTextField.text != "" && anchorObject != null)
+        if (surfaceDetection.GetPlacementPoseIsValid() && feedbackTextField.text != "" && anchorObject != null)
         {
             placeButton.interactable = true;
         }
@@ -74,7 +74,7 @@ public class ARNoteCreation : MonoBehaviour
         }
     }
 
-    private GameObject PlaceNote(string noteText, string authorText, Vector3 position, Quaternion rotation, bool sendToFirebase = true)
+    private GameObject PlaceFeedback(string noteText, string authorText, Vector3 position, Quaternion rotation, bool sendToFirebase = true)
     {
         // create note object
 
@@ -109,6 +109,9 @@ public class ARNoteCreation : MonoBehaviour
         Destroy(anchorObject);
 
         posterIndicatorText.text = "No QR Code Detected";
+
+        feedbackTextField.text = "";
+        feedbackAuthorField.text = "";
     }
 
     public void SetAnchorObject(GameObject anchorObject)
@@ -118,11 +121,9 @@ public class ARNoteCreation : MonoBehaviour
             this.anchorObject = anchorObject;
 
             posterIndicatorText.text = "Currently viewing: " + anchorObject.name;
-
-            Debug.Log(">>>>> Anchor Object: " + anchorObject.name);
         }
 
-        caliperEventHandler.ImageIdentified(anchorObject.name, anchorObject.GetInstanceID().ToString());
+        caliperEventHandler.ImageIdentified(anchorObject.name, anchorObject.GetInstanceID().ToString(), "The image detected is a qr code on the " + anchorObject.name + " poster.");
     }
 
     public GameObject GetAnchorObject()
@@ -130,15 +131,37 @@ public class ARNoteCreation : MonoBehaviour
         return anchorObject;
     }
 
-    public async void LoadExistingFeedbackAsync()
+    public async void LoadExistingFeedbackAsync() // todo: clean up mess
     {
         List<FeedbackData> existingFeedback = await firebaseHandler.GetFeedbackData(anchorObject.name);
 
-        foreach (var x in existingFeedback)
+        // foreach (var x in existingFeedback)
+        //for (int i = 0; i < existingFeedback.Count; i++)
+
+        int loadLimit = 5; // hard coded... maybe put up at the top
+        for (int i = 0; i < loadLimit; i++)
         {
-            PlaceNote(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
+            //PlaceFeedback(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
+
+            // dont place loaded notes in saved position, instead place them organized next to poster
+
+            // create note object
+
+            GameObject newNote = Instantiate(notePrefab, anchorObject.transform.position, anchorObject.transform.rotation) as GameObject;
+            newNote.transform.parent = anchorObject.transform;
+            newNote.name = "note";
+
+            // neat feedback positioning (some hard coded values...)
+
+            newNote.transform.localPosition += new Vector3(-.15f, 0, -.03f + .12f * i);
+
+            // set text of note
+
+            TMP_Text[] newNoteText = newNote.GetComponentsInChildren<TMP_Text>();
+            newNoteText[0].text = existingFeedback[existingFeedback.Count - 1 - i].text;
+            newNoteText[1].text = "- " + existingFeedback[existingFeedback.Count - 1 - i].author;
         }
 
-        caliperEventHandler.FeedbackLoaded(anchorObject.GetInstanceID().ToString(), anchorObject.name);
+        caliperEventHandler.FeedbackLoaded(existingFeedback.Count, anchorObject.name, anchorObject.GetInstanceID().ToString(), "Feedback data for the " + anchorObject.name + " poster was loaded into the app.");
     }
 }

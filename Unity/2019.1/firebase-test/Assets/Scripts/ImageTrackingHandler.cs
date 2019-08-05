@@ -6,7 +6,7 @@ using UnityEngine.XR.ARSubsystems;
 
 public class ImageTrackingHandler : MonoBehaviour
 {
-    public GameObject excomPrefab, exorgPrefab, arPrefab, seleniumPrefab;
+    public GameObject arPrefab, seleniumPrefab, heatmapPrefab, documentaryPrefab, mylaPrefab, chatbotPrefab;
 
     private ARTrackedImageManager trackedImageManager;
 
@@ -52,25 +52,6 @@ public class ImageTrackingHandler : MonoBehaviour
             {
                 switch (trackedImage.referenceImage.name)
                 {
-                    case "excom":
-                        GameObject excomObj = Instantiate(excomPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        excomObj.transform.parent = trackedImage.transform;
-                        excomObj.name = "excom";
-
-                        arNoteCreation.SetAnchorObject(excomObj);
-
-                        break;
-
-
-                    case "exorg":
-                        GameObject exorgObj = Instantiate(exorgPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        exorgObj.transform.parent = trackedImage.transform;
-                        exorgObj.name = "exorg";
-
-                        arNoteCreation.SetAnchorObject(exorgObj);
-
-                        break;
-
                     case "ar":
                         GameObject arObj = Instantiate(arPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
                         arObj.transform.parent = trackedImage.transform;
@@ -86,6 +67,42 @@ public class ImageTrackingHandler : MonoBehaviour
                         seleniumObj.name = "selenium";
 
                         arNoteCreation.SetAnchorObject(seleniumObj);
+
+                        break;
+
+                    case "heatmap":
+                        GameObject heatmapObj = Instantiate(heatmapPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        heatmapObj.transform.parent = trackedImage.transform;
+                        heatmapObj.name = "heatmap";
+
+                        arNoteCreation.SetAnchorObject(heatmapObj);
+
+                        break;
+
+                    case "documentary":
+                        GameObject documentaryObj = Instantiate(documentaryPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        documentaryObj.transform.parent = trackedImage.transform;
+                        documentaryObj.name = "documentary";
+
+                        arNoteCreation.SetAnchorObject(documentaryObj);
+
+                        break;
+
+                    case "myla":
+                        GameObject mylaObj = Instantiate(mylaPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        mylaObj.transform.parent = trackedImage.transform;
+                        mylaObj.name = "myla";
+
+                        arNoteCreation.SetAnchorObject(mylaObj);
+
+                        break;
+
+                    case "chatbot":
+                        GameObject chatbotObj = Instantiate(chatbotPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                        chatbotObj.transform.parent = trackedImage.transform;
+                        chatbotObj.name = "chatbot";
+
+                        arNoteCreation.SetAnchorObject(chatbotObj);
 
                         break;
                 }
