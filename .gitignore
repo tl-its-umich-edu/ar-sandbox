@@ -66,3 +66,5 @@ crashlytics-build.properties
 
 *.bearertoken.txt
 *.bearertoken.txt.meta
+Unity/2019.1/firebase-test/Assets/Resources/GoogleService-Info.plist
+Unity/2019.1/firebase-test/Assets/Resources/GoogleService-Info.plist.meta
