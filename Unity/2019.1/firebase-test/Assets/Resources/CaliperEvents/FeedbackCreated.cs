@@ -48,7 +48,6 @@ public class FeedbackCreated : MonoBehaviour
         actor.type = "Person";
 
         CaliperEventFeedbackCreatedDataActorExtensions actorExtensions = new CaliperEventFeedbackCreatedDataActorExtensions();
-        actorExtensions.posterName = posterName;
 		actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
 		actorExtensions.deviceName = SystemInfo.deviceName;
 		actorExtensions.deviceModel = SystemInfo.deviceModel;
@@ -67,6 +66,7 @@ public class FeedbackCreated : MonoBehaviour
         CaliperEventFeedbackCreatedDataObjectExtensions objectExtensions = new CaliperEventFeedbackCreatedDataObjectExtensions();
         objectExtensions.text = text;
         objectExtensions.author = author;
+        objectExtensions.poster = posterName;
 
         _object.extensions = objectExtensions;
 
@@ -140,4 +140,5 @@ public class CaliperEventFeedbackCreatedDataObjectExtensions
 {
     public string text;
     public string author;
+    public string poster;
 }
