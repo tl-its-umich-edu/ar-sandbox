@@ -69,9 +69,9 @@ MonoBehaviour:
       m_GuidLow: 5057977318604877338
       m_GuidHigh: 4780304888372618136
     m_SerializedTextureGuid:
-      m_GuidLow: 13020777342143425342
-      m_GuidHigh: 12710728460149931162
-    m_Size: {x: 0.038, y: 0.076}
+      m_GuidLow: 4901786115856506803
+      m_GuidHigh: 10708532561452256088
+    m_Size: {x: 0.038, y: 0.047323417}
     m_SpecifySize: 1
     m_Name: chatbot
     m_Texture: {fileID: 0}
