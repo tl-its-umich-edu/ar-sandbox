@@ -13,6 +13,8 @@ public class NoteSpawnBehavior : MonoBehaviour
     {
         initScale = transform.localScale;
         Debug.Log(initScale);
+
+        transform.localScale = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -30,10 +32,6 @@ public class NoteSpawnBehavior : MonoBehaviour
                 transform.localScale = initScale;
                 enabled = false;
             }
-        }
-        else
-        {
-            transform.localScale = Vector3.zero;
         }
 
         pauseBeforeWobble -= Time.deltaTime;

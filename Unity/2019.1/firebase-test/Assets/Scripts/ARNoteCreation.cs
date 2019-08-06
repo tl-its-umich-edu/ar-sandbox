@@ -139,7 +139,7 @@ public class ARNoteCreation : MonoBehaviour
         //for (int i = 0; i < existingFeedback.Count; i++)
 
         int loadLimit = 5; // hard coded... maybe put up at the top
-        for (int i = 0; i < loadLimit; i++)
+        for (int i = 0; i < Mathf.Min(loadLimit, existingFeedback.Count); i++)
         {
             //PlaceFeedback(x.text, x.author, x.position + anchorObject.transform.position, x.rotation * anchorObject.transform.rotation, false);
 

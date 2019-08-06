@@ -11,11 +11,13 @@ public class ImageTrackingHandler : MonoBehaviour
     private ARTrackedImageManager trackedImageManager;
 
     private ARNoteCreation arNoteCreation;
+    private CaliperEventHandler caliperEventHandler;
 
     // Start is called before the first frame update
     void Start()
     {
         arNoteCreation = GameObject.Find("Script Manager").GetComponent<ARNoteCreation>();
+        caliperEventHandler = GameObject.Find("Script Manager").GetComponent<CaliperEventHandler>();
     }
 
     // Update is called once per frame
@@ -50,72 +52,69 @@ public class ImageTrackingHandler : MonoBehaviour
         {
             if (arNoteCreation.GetAnchorObject() == null && trackedImage.trackingState == TrackingState.Tracking)
             {
+                GameObject prefabToCreate = null;
+
                 switch (trackedImage.referenceImage.name)
                 {
-                    case "ar":
-                        GameObject arObj = Instantiate(arPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        arObj.transform.parent = trackedImage.transform;
-                        arObj.name = "ar";
-
-                        arNoteCreation.SetAnchorObject(arObj);
-
+                    case "Augmented Reality Poster":
+                        prefabToCreate = arPrefab;
                         break;
 
-                    case "selenium":
-                        GameObject seleniumObj = Instantiate(seleniumPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        seleniumObj.transform.parent = trackedImage.transform;
-                        seleniumObj.name = "selenium";
-
-                        arNoteCreation.SetAnchorObject(seleniumObj);
-
+                    case "Selenium Poster":
+                        prefabToCreate = seleniumPrefab;
                         break;
 
-                    case "heatmap":
-                        GameObject heatmapObj = Instantiate(heatmapPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        heatmapObj.transform.parent = trackedImage.transform;
-                        heatmapObj.name = "heatmap";
-
-                        arNoteCreation.SetAnchorObject(heatmapObj);
-
+                    case "Study Spot Finder Poster":
+                        prefabToCreate = heatmapPrefab;
                         break;
 
-                    case "documentary":
-                        GameObject documentaryObj = Instantiate(documentaryPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        documentaryObj.transform.parent = trackedImage.transform;
-                        documentaryObj.name = "documentary";
-
-                        arNoteCreation.SetAnchorObject(documentaryObj);
-
+                    case "Documentary Poster":
+                        prefabToCreate = documentaryPrefab;
                         break;
 
-                    case "myla":
-                        GameObject mylaObj = Instantiate(mylaPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        mylaObj.transform.parent = trackedImage.transform;
-                        mylaObj.name = "myla";
-
-                        arNoteCreation.SetAnchorObject(mylaObj);
-
+                    case "MyLA Poster":
+                        prefabToCreate = mylaPrefab;
                         break;
 
-                    case "chatbot":
-                        GameObject chatbotObj = Instantiate(chatbotPrefab, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
-                        chatbotObj.transform.parent = trackedImage.transform;
-                        chatbotObj.name = "chatbot";
-
-                        arNoteCreation.SetAnchorObject(chatbotObj);
-
+                    case "Dining Chatbot Poster":
+                        prefabToCreate = chatbotPrefab;
                         break;
                 }
+
+                GameObject obj = Instantiate(prefabToCreate, trackedImage.transform.position, trackedImage.transform.rotation) as GameObject;
+                obj.transform.parent = trackedImage.transform;
+                obj.name = trackedImage.referenceImage.name;
+
+                arNoteCreation.SetAnchorObject(obj);
 
                 Debug.Log(">>>>> Image found: " + trackedImage.referenceImage.name);
 
                 arNoteCreation.LoadExistingFeedbackAsync();
+
+                SendContentLoadedAnalytics(obj);
             }
         }
 
         foreach (var trackedImage in eventArgs.removed)
         {
             
+        }
+    }
+
+    private void SendContentLoadedAnalytics(GameObject obj)
+    {
+        for (int i = 0; i < obj.transform.childCount; i++) {
+            if (obj.transform.GetChild(i).gameObject.name == "Content")
+            {
+                GameObject objContent = obj.transform.GetChild(i).gameObject;
+
+                caliperEventHandler.PosterContentLoaded(obj.name + " Content", objContent.GetInstanceID().ToString(), "This object has " + objContent.transform.childCount + " child objects.");
+                break;
+            }
+            else if (i == obj.transform.childCount - 1)
+            {
+                Debug.Log(obj.name + " doesn't have a child object named Content.");
+            }
         }
     }
 }

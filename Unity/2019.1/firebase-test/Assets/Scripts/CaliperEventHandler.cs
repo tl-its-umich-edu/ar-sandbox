@@ -16,8 +16,9 @@ public class CaliperEventHandler : MonoBehaviour
 	private FeedbackCreated feedbackCreated;
 	private ImageIdentified imageIdentified;
     private FeedbackLoaded feedbackLoaded;
+    private PosterContentLoaded posterContentLoaded;
 
-    private bool showDebug = false;
+    private bool showDebug = true;
 
 	// Start is called before the first frame update
 	void Start()
@@ -28,6 +29,7 @@ public class CaliperEventHandler : MonoBehaviour
 		feedbackCreated = (FeedbackCreated)gameObject.AddComponent(typeof(FeedbackCreated));
 		imageIdentified = (ImageIdentified)gameObject.AddComponent(typeof(ImageIdentified));
         feedbackLoaded = (FeedbackLoaded)gameObject.AddComponent(typeof(FeedbackLoaded));
+        posterContentLoaded = (PosterContentLoaded)gameObject.AddComponent(typeof(PosterContentLoaded));
 
         // send caliper event signalling beginning of session
 
@@ -67,6 +69,13 @@ public class CaliperEventHandler : MonoBehaviour
 
 		await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
 	}
+
+    public async void PosterContentLoaded(string posterContentObjectName, string posterContentObjectId, string posterContentObjectDesc)
+    {
+        string json = posterContentLoaded.CreateEvent(posterContentObjectName, posterContentObjectId, posterContentObjectDesc);
+
+        await PushCaliperEventAsync(json, thisPushURL, thisBearerTokenFile);
+    }
 
     private async System.Threading.Tasks.Task PushCaliperEventAsync(string json, string pushURL, TextAsset bearerTokenFile)
 	{

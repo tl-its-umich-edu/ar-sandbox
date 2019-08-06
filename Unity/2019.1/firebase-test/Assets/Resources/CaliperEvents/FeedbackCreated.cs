@@ -119,7 +119,6 @@ public class CaliperEventFeedbackCreatedDataActor
 [Serializable]
 public class CaliperEventFeedbackCreatedDataActorExtensions
 {
-    public string posterName;
 	public string deviceId;
 	public string deviceName;
 	public string deviceModel;
