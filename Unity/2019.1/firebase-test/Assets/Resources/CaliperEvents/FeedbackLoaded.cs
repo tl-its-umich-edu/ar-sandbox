@@ -43,7 +43,6 @@ public class FeedbackLoaded : MonoBehaviour
         actor.type = "Person";
 
         CaliperEventFeedbackLoadedDataActorExtensions actorExtensions = new CaliperEventFeedbackLoadedDataActorExtensions();
-        actorExtensions.feedbackRetrievedCount = feedbackRetrievedCount;
         actorExtensions.deviceId = SystemInfo.deviceUniqueIdentifier;
         actorExtensions.deviceName = SystemInfo.deviceName;
         actorExtensions.deviceModel = SystemInfo.deviceModel;
@@ -59,6 +58,12 @@ public class FeedbackLoaded : MonoBehaviour
         _object.name = feedbackObjectName;
         _object.description = feedbackObjectDesc;
         _object.type = "DigitalResource";
+
+        CaliperEventFeedbackLoadedObjectExtension objExtentions = new CaliperEventFeedbackLoadedObjectExtension();
+        objExtentions.feedbackRetrievedCount = feedbackRetrievedCount;
+
+        _object.extension = objExtentions;
+
 
         data._object = _object;
         data.eventTime = ce.sendTime;
@@ -109,7 +114,6 @@ public class CaliperEventFeedbackLoadedDataActor
 [Serializable]
 public class CaliperEventFeedbackLoadedDataActorExtensions
 {
-    public int feedbackRetrievedCount;
     public string deviceId;
     public string deviceName;
     public string deviceModel;
@@ -123,4 +127,11 @@ public class CaliperEventFeedbackLoadedDataObject
     public string id;
     public string description;
     public string type;
+    public CaliperEventFeedbackLoadedObjectExtension extension;
 }
+[Serializable]
+public class CaliperEventFeedbackLoadedObjectExtension
+{
+    public int feedbackRetrievedCount;
+}
+
