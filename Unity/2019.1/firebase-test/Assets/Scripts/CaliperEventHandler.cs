@@ -18,7 +18,7 @@ public class CaliperEventHandler : MonoBehaviour
     private FeedbackLoaded feedbackLoaded;
     private PosterContentLoaded posterContentLoaded;
 
-    private bool showDebug = true;
+    private bool showDebug = false;
 
 	// Start is called before the first frame update
 	void Start()
