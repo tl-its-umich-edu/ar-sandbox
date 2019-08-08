@@ -12,7 +12,6 @@ public class NoteSpawnBehavior : MonoBehaviour
     void Start()
     {
         initScale = transform.localScale;
-        Debug.Log(initScale);
 
         transform.localScale = Vector3.zero;
     }
