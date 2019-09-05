@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848409ee8ba454f42a5ddff137688a27, type: 3}
+  m_Name: ReferenceImageLibrary
+  m_EditorClassIdentifier: 
+  m_GuidLow: 5757724605947679401
+  m_GuidHigh: 11134149282660966290
+  m_Images:
+  - m_SerializedGuid:
+      m_GuidLow: 4653336661480083804
+      m_GuidHigh: 10545568483031779753
+    m_SerializedTextureGuid:
+      m_GuidLow: 1483982767432784886
+      m_GuidHigh: 16821461929715911115
+    m_Size: {x: 0.038, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: Augmented Reality Poster
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5060139457542365134
+      m_GuidHigh: 12977377477638317483
+    m_SerializedTextureGuid:
+      m_GuidLow: 3802263847737320115
+      m_GuidHigh: 17989562715836922089
+    m_Size: {x: 0.038, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: Selenium Poster
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5501726469193830416
+      m_GuidHigh: 9460044734912540034
+    m_SerializedTextureGuid:
+      m_GuidLow: 2659582257609989800
+      m_GuidHigh: 7203248205741963160
+    m_Size: {x: 0.038, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: Study Spot Finder Poster
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5587798274925581369
+      m_GuidHigh: 15602328038847252107
+    m_SerializedTextureGuid:
+      m_GuidLow: 9573921115349869253
+      m_GuidHigh: 16467255557056989850
+    m_Size: {x: 0.038, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: Documentary Poster
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5426847258557259859
+      m_GuidHigh: 14255489047998664067
+    m_SerializedTextureGuid:
+      m_GuidLow: 2615577498615685771
+      m_GuidHigh: 9182530814869036985
+    m_Size: {x: 0.038, y: 0.076}
+    m_SpecifySize: 1
+    m_Name: MyLA Poster
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5057977318604877338
+      m_GuidHigh: 4780304888372618136
+    m_SerializedTextureGuid:
+      m_GuidLow: 4901786115856506803
+      m_GuidHigh: 10708532561452256088
+    m_Size: {x: 0.038, y: 0.047323417}
+    m_SpecifySize: 1
+    m_Name: Dining Chatbot Poster
+    m_Texture: {fileID: 0}
