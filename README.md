@@ -1,2 +1,3 @@
-# ar-sandbox
-This project have test cases of Augmented Reality using unity/ARFoundation 
+# AR Sandbox
+
+This project has test cases of augmented reality using Unity/ARFoundation.
