@@ -61,6 +61,10 @@ the FirebaseHandler.cs script to search the data tree for data linked with this
 name. The data pulled is then sent as a list to the ARNoteCreation.cs script,
 where it is then converted into 3d objects that the viewer can see.
 
+## Multi User AR
+
+Multi User AR has not been implemented in this project. However, a look at it working can be seen at the [Unity AR Foundation sample project](https://github.com/Unity-Technologies/arfoundation-samples). It is part of the AR Collaborative Data Example scene.
+
 # Running This Project on an iOS Device
 
 ## Requirements
