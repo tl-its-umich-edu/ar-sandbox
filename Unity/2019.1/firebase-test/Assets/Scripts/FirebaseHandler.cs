@@ -147,7 +147,7 @@ public class FirebaseHandler : MonoBehaviour
 
         feedbackCount = args.Snapshot.ChildrenCount;
 
-        Debug.Log(feedbackCount);
+        //Debug.Log(feedbackCount);
     }
 
 

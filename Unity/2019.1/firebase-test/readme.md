@@ -76,18 +76,13 @@ Multi User AR has not been implemented in this project. However, a look at it wo
     - CocoaPods installed.
 - Your Apple Developer Signing Team ID (Can be found [here](https://developer.apple.com/account/#/membership))
 - A GoogleService-Info.plst file for a Firebase database.
-- A bearer token for Caliper analytics.
+- A bearer token for Caliper analytics saved as "caliper.bearertoken.txt".
 
 ## Building the project
 
 1. Open this project in Unity.
 2. Open the main scene in the Unity Editor. It can be found at Assets/Scenes/Main in the Project window.
-3. Add the bearer token for caliper to the project.
-    1. Create a text file with the bearing token as its contents, preferrably named "caliper.bearertoken.txt".
-    2. In the Unity editor, open the Resources folder in the Project window.
-    3. Drag and drop the text file into the Resources folder.
-    4. Select the Script Manager object in the Hierarchy window. This should cause the objects properties to show up in the Inspector window.
-    5. Drag the text file from the Resources folder and drop it into the box next to the label "This Bearer Token File". The box should change from "Missing (Text Asset)" to the name of your text file.
+3. Place the Caliper bearer token file in the Resources folder.
 4. Place the GoogleService-Info.plst file in the Resources folder.
 5. Add your Signing Team ID to the project.
     1. Open Project Settings... window found in the edit menu.
