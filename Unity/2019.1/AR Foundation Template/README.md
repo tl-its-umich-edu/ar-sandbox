@@ -3,6 +3,7 @@
 1. [Overview](#overview)
 2. [Getting Started](#getting-started)
 3. [Running This Project on an iOS Device](#running-this-project-on-an-ios-device)
+4. [Using This Template to Create Other Projects](#using-this-template-to-create-other-projects)
 4. [Components of this Project](#components-of-this-project)
 5. [Differences Between This Project and a Blank Project](#differences-between-this-project-and-a-blank-project)
 
@@ -14,17 +15,9 @@ This is a template for developing iOS apps in Unity with AR Foundation.
 
 ## Placing Objects in Augmented Reality
 
-To simply place an object in augmented reality, add an object to the scene and
-move it in front of the AR Camera's view. Then follow the build instructions and
-you should be able to view your object in AR with your device.
-
-## Placing Objects on Top of Real Life Surfaces
-
-Surfaces in session space can be detected by the ARPlaneManager.cs script are
-stored as planes that can be used to position objects, making them look like
-they are sitting on top of the surface.
-
-TODO: explain how to create a script that can raycast to detected planes and get the position of the raycast hit.
+To place an object in augmented reality, add an object to the scene and move it
+in front of the AR Camera's view. Then follow the build instructions and you
+should be able to view your object in AR with your device.
 
 #### Other uses of AR Foundation can be seen from the [AR Foundation Samples repository](https://github.com/Unity-Technologies/arfoundation-samples)
 
@@ -57,6 +50,17 @@ TODO: explain how to create a script that can raycast to detected planes and get
 5. Build the project with &#8984; + B or by clicking the Build and Run button in the file menu.
 6. Select a folder to save the exported project into.
 
+(The built project should just be displaying the camera feed with no AR elements
+because no objects have been placed in the scene.) 
+
+# Using This Template to Create New Projects
+
+To start developing new projects with this template, duplicate this folder and
+rename it.
+
+Also, make sure to change the Company Name and the iOS Bundle Identifier in
+Project Settings.
+
 # Components of This Project
 
 There are a few components of the sample scene that need to be taken into
@@ -74,27 +78,17 @@ package to work.
 This just needs to exist in the scene. It oversees the operation of the AR
 Foundation package.
 
-### ARInputManager.cs
-
-This is used for getting inputs from XR devices. It is not for getting inputs
-from the user's device itself.
-
 ### SetTargetFramerate.cs
 
 Sets the framerate of the camera feed to be something more comfortable than the
 default.
 
-### ARSessionOrigin.cs
-
-Assists the AR Session Origin object. (Since the Ar Session Origin alreay has
-this script attached to it, also having it here could be unnecessary.)
-
 ### ARPlaneManager.cs
 
-Tells AR Foundation to detect planes in the session space. An object set to the
-Plane Prefab will be created wherever a surface is detected (Useful for
-debugging). It has different detection modes that can be set depending on your
-needs.
+This just needs to exist to tell AR Foundation to detect surfaces. An object set
+to the Plane Prefab field will be created wherever a surface is detected (Useful
+for debugging). It has different detection modes that can be set depending on
+your needs.
 
 ### ARRaycastManager.cs
 

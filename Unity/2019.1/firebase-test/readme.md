@@ -14,45 +14,38 @@ to demonstrate the capabilities of AR.
 
 ## Object Placement
 
-In the app, the user can place sticky notes on walls, floors, and ceilings. This
-works by using AR Foundation to detect surfaces. The SurfaceDetection.cs script
-gets information about the surface such as position, rotation, and distance away
-from the user. The ARNoteCreation.cs script is sent that data and uses it to
-position the Placement Indicator prefab in the scene, letting the user know
-where a sticky note object will be placed. After the user types something into
-the feedback textbox and presses the place button, the ARNoteCreator.cs script
-will create a new Note prefab object and place it where the indicator prefab is
-located.
+In the app, the user can place sticky note objects on any flat surface. This is
+done by detecting those flat surfaces with AR Foundation, finding the spot the
+user is looking at, saving the position and rotation data, and then using that
+object to position the sticky note when the user wants to place one down. The
+surface detection is done in the SurfaceDetection.cs script and the note object
+creation and repositioning is done with the ARNoteCreation.cs script.
 
 ## Image Recognition
 
-When the user scans a certain QR code with the app, content related to it will
-appear. It does this by using image recognition provided by AR Foundation.
-Images are defined beforehand in the Tracked Images folder. The
-ReferenceImageLibrary asset contains the information about what images to look
-for, what their names are, and their measurements. An AR Tracked Image Manager
-is attached to the AR Session Origin object in the main scene, where it holds
-the image library. Anytime that an image defined in the library is in view of
-the device camera, it will trigger the ImageTrackingHandler.cs script which is
-also attached to the AR Session Origin. This script then loads a prefab based on
-the name of the detected image into the main scene for the user to see.
+The user can scan certain QR codes to make content appear. This is done by using
+AR Foundation's image recogintion to detect what qr code the user is scanning
+and where to place the content. The ReferenceImageLibrary asset in the
+Assets/Tracked Images folder contains what images to look for and is attached to
+the AR Session Origin object so that detection happens when the scene is
+running. There is also a script called ImageTrackingHandler.cs attached that
+determines the name of the image detected and loads content accordingly.
 
 ## Sending Caliper Analytics
 
 When the user performs certain actions, the app will send caliper events to the
 Unizen Data Platform (UDP). Templates for the events are stored as scripts in
-the resources folder under CaliperEvents. When the user does an action that
-causes an action to be sent, the CaliperEventHandler.cs script is called, which
-loads a template, fills it out with data from the app, converts it to a JSON
-string, and sends it as a POST event to a URL with a bearer token for
-authorization.
+the resources folder under CaliperEvents. When the user performs an action that
+triggers and event, the CaliperEventHandler.cs script loads a template, fills in
+data from the app, converts it to a JSON string, and sends it as a POST event to
+a URL with a bearer token for authorization.
 
 ## Sending Data with Firebase
 
 When the user places a note, data about that note is stored in a Firebase
-database. Most of the heavy lifting is done with the Firebase Unity SDK.
-Whenever the app wants to send data to the Firebase database, it calls the
-FirebaseHandler.cs script to traverse the JSON data tree and place the data.
+database. Most of the work is done with the Firebase Unity SDK. Whenever the app
+wants to send data to the Firebase database, it calls the FirebaseHandler.cs
+script to traverse the Firebase JSON data tree and store the data.
 
 ## Retrieving Data with Firebase
 
@@ -61,9 +54,17 @@ the FirebaseHandler.cs script to search the data tree for data linked with this
 name. The data pulled is then sent as a list to the ARNoteCreation.cs script,
 where it is then converted into 3d objects that the viewer can see.
 
+The QR codes for this app has a name associated with it. Scanning one will first
+prompt the ImageTrackingHandler.cs script to get the name of the image, then
+will pass it on to the ARNoteCreation.cs script. That script will then ask for
+the data from firebase using the FirebaseHandler.cs script and then will convert
+the data into note objects and position them to be next to the scanned image.
+
 ## Multi User AR
 
-Multi User AR has not been implemented in this project. However, a look at it working can be seen at the [Unity AR Foundation sample project](https://github.com/Unity-Technologies/arfoundation-samples). It is part of the AR Collaborative Data Example scene.
+Multi User AR has not been implemented in this project. However, a look at it
+working can be seen at the [Unity AR Foundation sample project](https://github.com/Unity-Technologies/arfoundation-samples).
+It is part of the AR Collaborative Data Example scene.
 
 # Running This Project on an iOS Device
 
