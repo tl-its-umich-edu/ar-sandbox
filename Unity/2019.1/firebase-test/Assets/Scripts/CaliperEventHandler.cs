@@ -31,6 +31,12 @@ public class CaliperEventHandler : MonoBehaviour
         feedbackLoaded = (FeedbackLoaded)gameObject.AddComponent(typeof(FeedbackLoaded));
         posterContentLoaded = (PosterContentLoaded)gameObject.AddComponent(typeof(PosterContentLoaded));
 
+        // load caliper bearing token from text resource
+
+        if (Resources.Load("caliper.bearertoken")) {
+            thisBearerTokenFile = (TextAsset)Resources.Load("caliper.bearertoken", typeof(TextAsset));
+        }
+
         // send caliper event signalling beginning of session
 
         SessionLoggedIn();
